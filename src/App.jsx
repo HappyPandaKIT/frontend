@@ -14,8 +14,8 @@ import ContactSection from './components/ContactSection'
 import Footer from './components/Footer'
 
 const BEATS = [
-  { id: 1, title: "Crystal Cave", bpm: 120, author: "cynicmusic", src: "/sounds/song18.mp3" },
-  { id: 2, title: "High Stakes, Low Chances", bpm: 140, author: "Ove Meela", src: "/sounds/HighStakes.mp3" }
+  { id: 1, title: "Crystal Cave", bpm: 120, author: "cynicmusic", src: `${import.meta.env.BASE_URL}sounds/song18.mp3` },
+  { id: 2, title: "High Stakes, Low Chances", bpm: 140, author: "Ove Meela", src: `${import.meta.env.BASE_URL}sounds/HighStakes.mp3` }
 ];
 
 function App() {
