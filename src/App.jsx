@@ -36,7 +36,7 @@ function App() {
       <ErrorDisplay error={displayError} />
       
       <VisualizerContainer analyser={audioPlayer.analyser} />
-      <div className="container" style={{maxWidth: '600px', margin: '0 auto'}}>
+      <div className="container drum-machine-wrapper">
         <DrumMachine />
       </div>
 
@@ -52,7 +52,7 @@ function App() {
         />
       )}
 
-      <hr className="nes-separator" style={{margin: '2rem 0'}} />
+      <hr className="nes-separator separator" />
 
       <FileUploadSection onFileUpload={handleFileUpload} />
 
@@ -63,7 +63,7 @@ function App() {
         onDeleteTrack={handlePlayTrackWithDeletion}
       />
 
-      <hr className="nes-separator" style={{margin: '2rem 0'}} />
+      <hr className="nes-separator separator" />
       
       <BeatsTable
         beats={BEATS}

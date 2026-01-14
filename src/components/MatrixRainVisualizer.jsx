@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import './Visualizer.css';
 
 const MatrixRainVisualizer = ({ analyser }) => {
   const canvasRef = useRef(null);
@@ -72,9 +73,9 @@ const MatrixRainVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title">
+    <div className="nes-container is-dark with-title visualizer-container">
       <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={800} height={200} style={{width: '100%'}} />
+      <canvas ref={canvasRef} width={800} height={200} className="visualizer-canvas" />
     </div>
   );
 };

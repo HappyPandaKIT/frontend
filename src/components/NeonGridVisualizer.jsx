@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import './Visualizer.css';
 
 const NeonGridVisualizer = ({ analyser }) => {
   const canvasRef = useRef(null);
@@ -138,9 +139,9 @@ const NeonGridVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title">
+    <div className="nes-container is-dark with-title visualizer-container">
       <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={800} height={400} style={{width: '100%'}} />
+      <canvas ref={canvasRef} width={800} height={400} className="visualizer-canvas" />
     </div>
   );
 };

@@ -1,0 +1,18 @@
+.uploaded-tracks-container {
+  margin-bottom: 2rem;
+  max-width: 100%;
+}
+
+.uploaded-tracks-title {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.uploaded-tracks-playing {
+  color: #92cc41;
+}
+
+.uploaded-tracks-delete-btn {
+  font-size: 0.8em;
+  padding: 0.3em 0.6em;
+}

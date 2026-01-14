@@ -1,0 +1,14 @@
+.visualizer-container {
+  width: 100%;
+}
+
+.visualizer-canvas {
+  width: 100%;
+}
+
+.visualizer-canvas-square {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  display: block;
+}

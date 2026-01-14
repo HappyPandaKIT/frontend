@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import './Visualizer.css';
 
 const OrbitingParticlesVisualizer = ({ analyser }) => {
   const canvasRef = useRef(null);
@@ -121,9 +122,9 @@ const OrbitingParticlesVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title">
+    <div className="nes-container is-dark with-title visualizer-container">
       <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={400} height={400} style={{width: '100%', maxWidth: '400px', margin: '0 auto', display: 'block'}} />
+      <canvas ref={canvasRef} width={400} height={400} className="visualizer-canvas-square" />
     </div>
   );
 };

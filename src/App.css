@@ -3,6 +3,24 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.drum-machine-wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 0.5rem;
+}
+
+.separator {
+  margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+  #root {
+    padding: 0.5rem;
+  }
 }
 
 .logo {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './VisualizerContainer.css';
 import Visualizer from './Visualizer';
 import CircleVisualizer from './CircleVisualizer';
 import WaveformVisualizer from './WaveformVisualizer';
@@ -28,12 +29,12 @@ const VisualizerContainer = ({ analyser }) => {
 
   return (
     <div>
-      <div style={{ marginBottom: '1rem', textAlign: 'center', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem' }}>
+      <div className="visualizer-controls">
         {['bars', 'circle', 'waveform', 'matrix', 'pulse', 'wormhole', 'blocks', 'particles', 'neon', 'scope'].map((type) => (
           <button
             key={type}
             type="button"
-            className={`nes-btn ${visualizerType === type ? 'is-primary' : ''}`}
+            className={`nes-btn visualizer-button ${visualizerType === type ? 'is-primary' : ''}`}
             onClick={() => setVisualizerType(type)}
           >
             {type.toUpperCase()}

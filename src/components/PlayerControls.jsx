@@ -1,4 +1,5 @@
 import React from 'react';
+import './PlayerControls.css';
 
 const formatTime = (time) => {
   if (!isFinite(time)) return '0:00';
@@ -17,47 +18,28 @@ const PlayerControls = ({
   onVolumeChange 
 }) => {
   return (
-    <div style={{maxWidth: '600px', margin: '1.5rem auto', padding: '0 1rem'}}>
-      <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+    <div className="player-controls-container">
+      <div className="player-controls-main">
         <button
           type="button"
-          className={`nes-btn ${isPlaying ? 'is-error' : 'is-success'}`}
+          className={`nes-btn player-controls-button ${isPlaying ? 'is-error' : 'is-success'}`}
           onClick={onTogglePlayPause}
-          style={{padding: '0.3em 0.6em', minWidth: '40px'}}
         >
           {isPlaying ? '⏸' : '▶'}
         </button>
-        <div style={{
-          flex: 1,
-          width: '100%',
-          height: '8px',
-          backgroundColor: '#444',
-          border: '2px solid #000',
-          cursor: 'pointer',
-          position: 'relative',
-          overflow: 'hidden'
-        }} onClick={onProgressClick}>
-          <div style={{
-            height: '100%',
-            backgroundColor: '#92cc41',
-            width: `${duration ? (currentTime / duration) * 100 : 0}%`,
-            transition: 'width 0.1s linear'
-          }} />
+        <div className="player-controls-progress" onClick={onProgressClick}>
+          <div 
+            className="player-controls-progress-bar"
+            style={{width: `${duration ? (currentTime / duration) * 100 : 0}%`}}
+          />
         </div>
       </div>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginTop: '0.5rem',
-        fontSize: '12px',
-        color: '#fff',
-        marginLeft: '50px'
-      }}>
+      <div className="player-controls-time">
         <span>{formatTime(currentTime)}</span>
         <span>{formatTime(duration)}</span>
       </div>
-      <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginTop: '1rem', marginLeft: '50px'}}>
-        <span style={{fontSize: '12px', minWidth: '30px'}}>VOL:</span>
+      <div className="player-controls-volume">
+        <span className="player-controls-volume-label">VOL:</span>
         <input 
           type="range" 
           min="0" 
@@ -65,7 +47,7 @@ const PlayerControls = ({
           step="0.1" 
           value={volume}
           onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
-          style={{height: '6px', flex: 1}}
+          className="player-controls-volume-slider"
         />
       </div>
     </div>

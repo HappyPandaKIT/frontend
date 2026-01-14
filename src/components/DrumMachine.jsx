@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
+import './DrumMachine.css';
 
 // --- STYLING (Styled Components für Layout + NES.css Integration) ---
 const MachineContainer = styled.div`
@@ -9,6 +10,13 @@ const MachineContainer = styled.div`
   border: 4px solid #000;
   box-shadow: 8px 8px 0px #212529;
   position: relative;
+
+  @media (max-width: 768px) {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0px #212529;
+  }
 `;
 
 const PadGrid = styled.div`
@@ -16,6 +24,16 @@ const PadGrid = styled.div`
   grid-template-columns: repeat(7, 1fr);
   gap: 15px;
   margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
 `;
 
 const Screen = styled.div`
@@ -31,6 +49,18 @@ const Screen = styled.div`
   justify-content: center;
   text-transform: uppercase;
   box-shadow: inset 4px 4px 0px rgba(0,0,0,0.1);
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    padding: 10px;
+    min-height: 40px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 8px;
+    padding: 8px;
+    min-height: 35px;
+  }
 `;
 
 // --- DATEN: Pad Konfiguration ---
@@ -497,14 +527,14 @@ const DrumMachine = () => {
 
   return (
     <MachineContainer className="nes-container is-rounded">
-      <div style={{marginBottom: '10px', textAlign: 'center', fontWeight: 'bold'}}>
+      <div className="drum-machine-title">
         MPC-2077
       </div>
       
       <Screen>{display}</Screen>
 
-      <div style={{marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px'}}>
-        <span>VOL:</span>
+      <div className="drum-machine-volume-control">
+        <span className="drum-machine-volume-label">VOL:</span>
         <input 
           type="range" 
           min="0" 
@@ -512,7 +542,7 @@ const DrumMachine = () => {
           step="0.1" 
           value={volume}
           onChange={(e) => setVolume(parseFloat(e.target.value))}
-          style={{height: '20px', width: '100%'}}
+          className="drum-machine-volume-slider"
         />
       </div>
 
@@ -520,25 +550,16 @@ const DrumMachine = () => {
         {PADS.map((pad) => (
           <button
             key={pad.id}
-            className={`nes-btn ${activePad === pad.id ? 'is-primary' : ''}`}
+            className={`nes-btn drum-pad ${activePad === pad.id ? 'is-primary' : ''}`}
             onClick={() => playSound(pad.id)}
-            style={{
-              height: '80px',
-              fontSize: '12px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              transition: 'transform 0.1s'
-            }}
           >
             <span>{pad.key}</span>
-            <span style={{fontSize: '0.6em', marginTop: '5px', opacity: 0.7}}>{pad.id}</span>
+            <span className="drum-pad-label">{pad.id}</span>
           </button>
         ))}
       </PadGrid>
 
-      <div style={{textAlign: 'center', fontSize: '10px', marginTop: '10px'}}>
+      <div className="drum-machine-instructions">
         PRESS KEYS OR TAP PADS
       </div>
     </MachineContainer>

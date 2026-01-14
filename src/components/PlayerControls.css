@@ -1,0 +1,64 @@
+.player-controls-container {
+  max-width: 600px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+
+.player-controls-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.player-controls-button {
+  padding: 0.3em 0.6em;
+  min-width: 40px;
+  flex-shrink: 0;
+}
+
+.player-controls-progress {
+  flex: 1;
+  width: 100%;
+  height: 8px;
+  background-color: #444;
+  border: 2px solid #000;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.player-controls-progress-bar {
+  height: 100%;
+  background-color: #92cc41;
+  transition: width 0.1s linear;
+}
+
+.player-controls-time {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: clamp(10px, 2vw, 12px);
+  color: #fff;
+  margin-left: 50px;
+}
+
+.player-controls-volume {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 1rem;
+  margin-left: 50px;
+}
+
+.player-controls-volume-label {
+  font-size: clamp(10px, 2vw, 12px);
+  min-width: 30px;
+  flex-shrink: 0;
+}
+
+.player-controls-volume-slider {
+  height: 6px;
+  flex: 1;
+  min-width: 0;
+}
