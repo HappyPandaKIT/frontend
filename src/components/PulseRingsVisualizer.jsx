@@ -55,9 +55,11 @@ const PulseRingsVisualizer = ({ analyser }) => {
 
       rings.forEach((ring, idx) => {
         // Calculate color based on frequency
-        if (ring.frequency > 0.8) ctx.strokeStyle = '#e76e55'; // Red
-        else if (ring.frequency > 0.4) ctx.strokeStyle = '#f7d51d'; // Yellow
-        else ctx.strokeStyle = '#92cc41'; // Green
+        if (ring.frequency > 0.8) ctx.strokeStyle = '#ff006e'; // Magenta
+        else if (ring.frequency > 0.6) ctx.strokeStyle = '#fb5607'; // Orange
+        else if (ring.frequency > 0.4) ctx.strokeStyle = '#ffbe0b'; // Yellow
+        else if (ring.frequency > 0.2) ctx.strokeStyle = '#06ffa5'; // Cyan
+        else ctx.strokeStyle = '#3a86ff'; // Blue
 
         // Fade line width and opacity
         ctx.lineWidth = 3 * ring.life;
@@ -101,10 +103,7 @@ const PulseRingsVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title visualizer-container">
-      <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={400} height={400} className="visualizer-canvas-square" />
-    </div>
+    <canvas ref={canvasRef} width={400} height={400} className="visualizer-canvas-square" />
   );
 };
 

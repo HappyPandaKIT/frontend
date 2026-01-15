@@ -47,9 +47,10 @@ const NeonGridVisualizer = ({ analyser }) => {
 
           // Color based on frequency
           let color;
-          if (value > 0.7) color = `rgba(231, 110, 85, ${intensity})`; // Red/pink
-          else if (value > 0.4) color = `rgba(247, 213, 29, ${intensity})`; // Yellow/gold
-          else color = `rgba(146, 204, 65, ${intensity})`; // Green/lime
+          if (value > 0.7) color = `rgba(255, 0, 110, ${intensity})`; // Magenta
+          else if (value > 0.5) color = `rgba(251, 86, 7, ${intensity})`; // Orange
+          else if (value > 0.3) color = `rgba(255, 190, 11, ${intensity})`; // Yellow
+          else color = `rgba(6, 255, 165, ${intensity})`; // Cyan
 
           // Draw filled cell with glow
           ctx.fillStyle = color;
@@ -139,10 +140,7 @@ const NeonGridVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title visualizer-container">
-      <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={800} height={400} className="visualizer-canvas" />
-    </div>
+    <canvas ref={canvasRef} width={800} height={400} className="visualizer-canvas" />
   );
 };
 

@@ -50,9 +50,11 @@ const WormholeVisualizer = ({ analyser }) => {
         // Calculate color based on distance from center
         const normalizedRadius = ring.radius / centerX;
         
-        if (normalizedRadius < 0.3) ctx.strokeStyle = '#e76e55'; // Red (close)
-        else if (normalizedRadius < 0.6) ctx.strokeStyle = '#f7d51d'; // Yellow (mid)
-        else ctx.strokeStyle = '#92cc41'; // Green (far)
+        if (normalizedRadius < 0.2) ctx.strokeStyle = '#ff006e'; // Magenta (close)
+        else if (normalizedRadius < 0.4) ctx.strokeStyle = '#fb5607'; // Orange
+        else if (normalizedRadius < 0.6) ctx.strokeStyle = '#ffbe0b'; // Yellow (mid)
+        else if (normalizedRadius < 0.8) ctx.strokeStyle = '#06ffa5'; // Cyan
+        else ctx.strokeStyle = '#3a86ff'; // Blue (far)
 
         // Draw concentric circle
         ctx.lineWidth = ring.thickness;
@@ -114,10 +116,7 @@ const WormholeVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title visualizer-container">
-      <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={400} height={400} className="visualizer-canvas-square" />
-    </div>
+    <canvas ref={canvasRef} width={400} height={400} className="visualizer-canvas-square" />
   );
 };
 

@@ -27,10 +27,12 @@ const Visualizer = ({ analyser }) => {
       for (let i = 0; i < bufferLength; i++) {
         barHeight = dataArray[i];
 
-        // Pixel Art Colors
-        if (barHeight > 200) ctx.fillStyle = '#e76e55'; // Red
-        else if (barHeight > 100) ctx.fillStyle = '#f7d51d'; // Yellow
-        else ctx.fillStyle = '#92cc41'; // Green
+        // Vibrant Colors
+        if (barHeight > 200) ctx.fillStyle = '#ff006e'; // Magenta
+        else if (barHeight > 150) ctx.fillStyle = '#fb5607'; // Orange
+        else if (barHeight > 100) ctx.fillStyle = '#ffbe0b'; // Yellow
+        else if (barHeight > 50) ctx.fillStyle = '#06ffa5'; // Cyan
+        else ctx.fillStyle = '#3a86ff'; // Blue
 
         // Mache es "blockig" für Pixel-Look
         const quantHeight = Math.floor(barHeight / 10) * 10; 
@@ -51,10 +53,7 @@ const Visualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title visualizer-container">
-      <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={800} height={200} className="visualizer-canvas" />
-    </div>
+    <canvas ref={canvasRef} width={800} height={200} className="visualizer-canvas" />
   );
 };
 

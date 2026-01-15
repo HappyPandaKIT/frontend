@@ -44,9 +44,11 @@ const MatrixRainVisualizer = ({ analyser }) => {
         const frequency = dataArray[freqIdx] / 255;
 
         // Color based on frequency
-        if (frequency > 0.8) ctx.fillStyle = '#e76e55'; // Red (high)
-        else if (frequency > 0.4) ctx.fillStyle = '#f7d51d'; // Yellow (mid)
-        else ctx.fillStyle = '#92cc41'; // Green (low)
+        if (frequency > 0.8) ctx.fillStyle = '#ff006e'; // Magenta (high)
+        else if (frequency > 0.6) ctx.fillStyle = '#fb5607'; // Orange
+        else if (frequency > 0.4) ctx.fillStyle = '#ffbe0b'; // Yellow (mid)
+        else if (frequency > 0.2) ctx.fillStyle = '#06ffa5'; // Cyan
+        else ctx.fillStyle = '#3a86ff'; // Blue (low)
 
         // Draw character
         const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
@@ -73,10 +75,7 @@ const MatrixRainVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title visualizer-container">
-      <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={800} height={200} className="visualizer-canvas" />
-    </div>
+    <canvas ref={canvasRef} width={800} height={200} className="visualizer-canvas" />
   );
 };
 

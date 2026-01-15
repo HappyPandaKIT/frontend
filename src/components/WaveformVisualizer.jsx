@@ -21,10 +21,17 @@ const WaveformVisualizer = ({ analyser }) => {
       ctx.fillStyle = '#212529';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw glowing oscillating line
-      ctx.strokeStyle = '#92cc41';
+      // Draw glowing oscillating line with gradient
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+      gradient.addColorStop(0, '#ff006e');
+      gradient.addColorStop(0.25, '#fb5607');
+      gradient.addColorStop(0.5, '#ffbe0b');
+      gradient.addColorStop(0.75, '#06ffa5');
+      gradient.addColorStop(1, '#3a86ff');
+      
+      ctx.strokeStyle = gradient;
       ctx.lineWidth = 3;
-      ctx.shadowColor = '#92cc41';
+      ctx.shadowColor = '#06ffa5';
       ctx.shadowBlur = 15;
       ctx.globalAlpha = 0.9;
 
@@ -75,10 +82,7 @@ const WaveformVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title visualizer-container">
-      <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={800} height={200} className="visualizer-canvas" />
-    </div>
+    <canvas ref={canvasRef} width={800} height={200} className="visualizer-canvas" />
   );
 };
 

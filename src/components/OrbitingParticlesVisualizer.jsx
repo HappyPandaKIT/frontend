@@ -72,7 +72,7 @@ const OrbitingParticlesVisualizer = ({ analyser }) => {
           const t1 = particle.trail[i];
           const t2 = particle.trail[i + 1];
           
-          ctx.strokeStyle = frequency > 0.7 ? '#e76e55' : frequency > 0.4 ? '#f7d51d' : '#92cc41';
+          ctx.strokeStyle = frequency > 0.7 ? '#ff006e' : frequency > 0.5 ? '#fb5607' : frequency > 0.3 ? '#ffbe0b' : '#06ffa5';
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(t1.x, t1.y);
@@ -83,9 +83,10 @@ const OrbitingParticlesVisualizer = ({ analyser }) => {
         // Draw particle
         ctx.globalAlpha = 0.8 + frequency * 0.2;
         
-        if (frequency > 0.7) ctx.fillStyle = '#e76e55'; // Red
-        else if (frequency > 0.4) ctx.fillStyle = '#f7d51d'; // Yellow
-        else ctx.fillStyle = '#92cc41'; // Green
+        if (frequency > 0.7) ctx.fillStyle = '#ff006e'; // Magenta
+        else if (frequency > 0.5) ctx.fillStyle = '#fb5607'; // Orange
+        else if (frequency > 0.3) ctx.fillStyle = '#ffbe0b'; // Yellow
+        else ctx.fillStyle = '#06ffa5'; // Cyan
 
         ctx.beginPath();
         ctx.arc(x, y, particle.size + frequency * 3, 0, Math.PI * 2);
@@ -122,10 +123,7 @@ const OrbitingParticlesVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title visualizer-container">
-      <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={400} height={400} className="visualizer-canvas-square" />
-    </div>
+    <canvas ref={canvasRef} width={400} height={400} className="visualizer-canvas-square" />
   );
 };
 

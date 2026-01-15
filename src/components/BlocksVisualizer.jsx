@@ -44,9 +44,10 @@ const BlocksVisualizer = ({ analyser }) => {
 
           // Determine color based on frequency value
           let color;
-          if (value > 0.7) color = '#e76e55'; // Red
-          else if (value > 0.4) color = '#f7d51d'; // Yellow
-          else color = '#92cc41'; // Green
+          if (value > 0.7) color = '#ff006e'; // Magenta
+          else if (value > 0.5) color = '#fb5607'; // Orange
+          else if (value > 0.3) color = '#ffbe0b'; // Yellow
+          else color = '#06ffa5'; // Cyan
 
           // Draw isometric block (3D cube effect)
           drawIsometricBlock(ctx, isoX, isoY, blockWidth / 2, blockHeight / 2, height, color);
@@ -117,10 +118,7 @@ const BlocksVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title visualizer-container">
-      <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={800} height={400} className="visualizer-canvas" />
-    </div>
+    <canvas ref={canvasRef} width={800} height={400} className="visualizer-canvas" />
   );
 };
 

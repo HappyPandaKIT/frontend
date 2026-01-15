@@ -61,9 +61,9 @@ const OscilloscopeVisualizer = ({ analyser }) => {
       }
 
       // Draw Lissajous curve
-      ctx.strokeStyle = '#92cc41';
+      ctx.strokeStyle = '#06ffa5';
       ctx.lineWidth = 2;
-      ctx.shadowColor = '#92cc41';
+      ctx.shadowColor = '#06ffa5';
       ctx.shadowBlur = 10;
       ctx.globalAlpha = 0.9;
 
@@ -91,14 +91,17 @@ const OscilloscopeVisualizer = ({ analyser }) => {
 
       // Color intensity based on signal strength
       if (maxAmplitude > 0.8) {
-        ctx.strokeStyle = '#e76e55'; // Red - high intensity
-        ctx.shadowColor = '#e76e55';
-      } else if (maxAmplitude > 0.4) {
-        ctx.strokeStyle = '#f7d51d'; // Yellow - medium
-        ctx.shadowColor = '#f7d51d';
+        ctx.strokeStyle = '#ff006e'; // Magenta - high intensity
+        ctx.shadowColor = '#ff006e';
+      } else if (maxAmplitude > 0.5) {
+        ctx.strokeStyle = '#fb5607'; // Orange - medium-high
+        ctx.shadowColor = '#fb5607';
+      } else if (maxAmplitude > 0.3) {
+        ctx.strokeStyle = '#ffbe0b'; // Yellow - medium
+        ctx.shadowColor = '#ffbe0b';
       } else {
-        ctx.strokeStyle = '#92cc41'; // Green - low
-        ctx.shadowColor = '#92cc41';
+        ctx.strokeStyle = '#06ffa5'; // Cyan - low
+        ctx.shadowColor = '#06ffa5';
       }
 
       // Redraw with color
@@ -142,10 +145,7 @@ const OscilloscopeVisualizer = ({ analyser }) => {
   }, [analyser]);
 
   return (
-    <div className="nes-container is-dark with-title visualizer-container">
-      <p className="title">Visualizer-3000</p>
-      <canvas ref={canvasRef} width={400} height={400} className="visualizer-canvas-square" />
-    </div>
+    <canvas ref={canvasRef} width={400} height={400} className="visualizer-canvas-square" />
   );
 };
 

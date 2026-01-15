@@ -70,8 +70,6 @@ function App() {
         currentBeatId={audioPlayer.currentBeat?.id}
         onPlayTrack={audioPlayer.playTrack}
       />
-
-      <ContactSection />
       <Footer />
     </div>
   );
