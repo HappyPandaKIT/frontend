@@ -42,11 +42,15 @@ const PulseRingsVisualizer = ({ analyser }) => {
       }
 
       // Draw center nucleus
-      ctx.fillStyle = '#8bac0f';
+      const centerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 15);
+      centerGradient.addColorStop(0, '#ff006e');
+      centerGradient.addColorStop(0.5, '#8b2fc9');
+      centerGradient.addColorStop(1, '#3a86ff');
+      ctx.fillStyle = centerGradient;
       ctx.beginPath();
       ctx.arc(centerX, centerY, 15, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = '#0f380f';
+      ctx.strokeStyle = '#3a86ff';
       ctx.lineWidth = 2;
       ctx.stroke();
 
@@ -77,14 +81,14 @@ const PulseRingsVisualizer = ({ analyser }) => {
       ctx.globalAlpha = 1;
 
       // Draw frequency bar around center for extra feedback
-      ctx.strokeStyle = '#f7d51d';
+      ctx.strokeStyle = '#ffbe0b';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(centerX, centerY, 40 + average * 30, 0, Math.PI * 2);
       ctx.stroke();
 
       // Draw grid reference circles
-      ctx.strokeStyle = 'rgba(146, 204, 65, 0.15)';
+      ctx.strokeStyle = 'rgba(6, 255, 165, 0.15)';
       ctx.lineWidth = 1;
       for (let r = 50; r < 150; r += 30) {
         ctx.beginPath();

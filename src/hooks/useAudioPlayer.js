@@ -18,6 +18,7 @@ export const useAudioPlayer = () => {
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
       const analyserNode = audioContextRef.current.createAnalyser();
       analyserNode.fftSize = 256;
+      analyserNode.smoothingTimeConstant = 0.8; // Add smoothing (0-1, default is 0.8)
 
       audioRef.current = new Audio();
       audioRef.current.crossOrigin = "anonymous";

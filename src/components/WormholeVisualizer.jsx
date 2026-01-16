@@ -92,16 +92,16 @@ const WormholeVisualizer = ({ analyser }) => {
 
       // Draw center vortex
       const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 30);
-      gradient.addColorStop(0, '#8bac0f');
-      gradient.addColorStop(0.5, '#306230');
-      gradient.addColorStop(1, '#0f380f');
+      gradient.addColorStop(0, '#ff006e');
+      gradient.addColorStop(0.5, '#8b2fc9');
+      gradient.addColorStop(1, '#3a86ff');
       
       ctx.fillStyle = gradient;
       ctx.beginPath();
       ctx.arc(centerX, centerY, 30 + average * 20, 0, Math.PI * 2);
       ctx.fill();
       
-      ctx.strokeStyle = '#0f380f';
+      ctx.strokeStyle = '#3a86ff';
       ctx.lineWidth = 2;
       ctx.stroke();
     };

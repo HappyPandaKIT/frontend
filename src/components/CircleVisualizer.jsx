@@ -32,12 +32,14 @@ const CircleVisualizer = ({ analyser }) => {
       ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Draw frequency bars in circle
-      const barCount = bufferLength;
+      // Draw frequency bars in circle (reduced to 64 for performance)
+      const barCount = 64;
       const angleSlice = (Math.PI * 2) / barCount;
 
       for (let i = 0; i < barCount; i++) {
-        const barHeight = dataArray[i] / 255;
+        // Sample every other frequency bin
+        const dataIndex = i * 2;
+        const barHeight = dataArray[dataIndex] / 255;
         const angle = angleSlice * i;
 
         const x1 = centerX + Math.cos(angle) * radius;

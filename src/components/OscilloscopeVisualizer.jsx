@@ -36,12 +36,12 @@ const OscilloscopeVisualizer = ({ analyser }) => {
       const scale = Math.min(centerX, centerY) * 0.8;
 
       // Draw CRT screen border
-      ctx.strokeStyle = '#306230';
+      ctx.strokeStyle = '#06ffa5';
       ctx.lineWidth = 4;
       ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
       // Draw center crosshair
-      ctx.strokeStyle = 'rgba(146, 204, 65, 0.3)';
+      ctx.strokeStyle = 'rgba(6, 255, 165, 0.3)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(centerX, 20);
@@ -54,7 +54,7 @@ const OscilloscopeVisualizer = ({ analyser }) => {
 
       // Draw concentric circles for scale
       for (let r = 50; r < scale; r += 50) {
-        ctx.strokeStyle = 'rgba(146, 204, 65, 0.15)';
+        ctx.strokeStyle = 'rgba(6, 255, 165, 0.15)';
         ctx.beginPath();
         ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
         ctx.stroke();
@@ -129,7 +129,7 @@ const OscilloscopeVisualizer = ({ analyser }) => {
       ctx.shadowBlur = 0;
 
       // Draw scope info text
-      ctx.fillStyle = '#8bac0f';
+      ctx.fillStyle = '#06ffa5';
       ctx.font = '10px "Courier New", monospace';
       ctx.fillText('X-Y MODE', 20, 30);
       ctx.fillText(`AMPLITUDE: ${(maxAmplitude * 100).toFixed(1)}%`, 20, 45);

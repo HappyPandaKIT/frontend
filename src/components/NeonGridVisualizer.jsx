@@ -112,7 +112,7 @@ const NeonGridVisualizer = ({ analyser }) => {
       ctx.shadowBlur = 0;
 
       // Draw grid lines
-      ctx.strokeStyle = 'rgba(146, 204, 65, 0.2)';
+      ctx.strokeStyle = 'rgba(6, 255, 165, 0.2)';
       ctx.lineWidth = 1;
 
       for (let i = 0; i <= cols; i++) {

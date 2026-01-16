@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './VisualizerContainer.css';
 import BarVisualizer from './BarVisualizer';
 import CircleVisualizer from './CircleVisualizer';
+import Circle2Visualizer from './Circle2Visualizer';
 import WaveformVisualizer from './WaveformVisualizer';
 import MatrixRainVisualizer from './MatrixRainVisualizer';
 import PulseRingsVisualizer from './PulseRingsVisualizer';
@@ -18,6 +19,7 @@ const VisualizerContainer = ({ analyser }) => {
   const visualizers = {
     bars: <BarVisualizer analyser={analyser} />,
     circle: <CircleVisualizer analyser={analyser} />,
+    circle2: <Circle2Visualizer analyser={analyser} />,
     waveform: <WaveformVisualizer analyser={analyser} />,
     matrix: <MatrixRainVisualizer analyser={analyser} />,
     pulse: <PulseRingsVisualizer analyser={analyser} />,
@@ -32,7 +34,7 @@ const VisualizerContainer = ({ analyser }) => {
   return (
     <div className="nes-container is-dark visualizer-container">
       <div className="visualizer-controls">
-        {['bars', 'circle', 'waveform', 'matrix', 'pulse', 'wormhole', 'blocks', 'particles', 'neon', 'scope', 'circwave'].map((type) => (
+        {['bars', 'circle', 'circle2', 'waveform', 'matrix', 'pulse', 'wormhole', 'blocks', 'particles', 'neon', 'scope', 'circwave'].map((type) => (
           <button
             key={type}
             type="button"

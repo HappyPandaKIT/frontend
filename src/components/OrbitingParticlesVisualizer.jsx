@@ -103,9 +103,9 @@ const OrbitingParticlesVisualizer = ({ analyser }) => {
 
       // Draw center
       const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 30);
-      gradient.addColorStop(0, '#8bac0f');
-      gradient.addColorStop(0.5, '#306230');
-      gradient.addColorStop(1, 'rgba(15, 56, 15, 0.5)');
+      gradient.addColorStop(0, '#ff006e');
+      gradient.addColorStop(0.5, '#8b2fc9');
+      gradient.addColorStop(1, 'rgba(58, 134, 255, 0.5)');
       
       ctx.fillStyle = gradient;
       ctx.beginPath();
