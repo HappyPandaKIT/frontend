@@ -83,7 +83,7 @@ const PADS = [
   { id: 'Zap', key: '8', url: '/drums/zap.wav' },
 ];
 
-const DrumMachine = () => {
+const DrumMachine = ({ onAudioContextReady }) => {
   const [display, setDisplay] = useState("READY TO PLAY");
   const [activePad, setActivePad] = useState(null);
   const [volume, setVolume] = useState(0.8);
@@ -122,6 +122,11 @@ const DrumMachine = () => {
 
       await Promise.all(loadPromises);
       setDisplay("READY");
+      
+      // Pass audio context and playSound function to parent
+      if (onAudioContextReady) {
+        onAudioContextReady(audioCtxRef.current, playSound);
+      }
     };
 
     initAudio();
@@ -130,7 +135,7 @@ const DrumMachine = () => {
     return () => {
       if (audioCtxRef.current) audioCtxRef.current.close();
     };
-  }, []);
+  }, [onAudioContextReady]);
 
   // 2. Funktion zum Abspielen
   const playSound = useCallback((padId) => {

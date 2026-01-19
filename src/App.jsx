@@ -1,11 +1,12 @@
 import './App.css'
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { useAudioPlayer } from './hooks/useAudioPlayer'
 import { useUploadedTracks } from './hooks/useUploadedTracks'
 import Header from './components/Header'
 import ErrorDisplay from './components/ErrorDisplay'
 import VisualizerContainer from './components/VisualizerContainer'
 import DrumMachine from './components/DrumMachine'
+import Beatmaker from './components/Beatmaker'
 import PlayerControls from './components/PlayerControls'
 import FileUploadSection from './components/FileUploadSection'
 import UploadedTracksTable from './components/UploadedTracksTable'
@@ -22,6 +23,15 @@ function App() {
   const audioPlayer = useAudioPlayer();
   const { uploadedTracks, handleFileUpload, deleteUploadedTrack } = useUploadedTracks();
   const displayError = audioPlayer.error;
+  
+  // State for sharing audio context and playSound between DrumMachine and Beatmaker
+  const [drumAudioContext, setDrumAudioContext] = useState(null);
+  const [drumPlaySound, setDrumPlaySound] = useState(null);
+
+  const handleAudioContextReady = useCallback((audioCtx, playSound) => {
+    setDrumAudioContext(audioCtx);
+    setDrumPlaySound(() => playSound); // Wrap in arrow function to store function reference
+  }, []);
 
   const handlePlayTrackWithDeletion = (trackId) => {
     if (audioPlayer.currentBeat?.id === trackId) {
@@ -36,8 +46,13 @@ function App() {
       <ErrorDisplay error={displayError} />
       
       <VisualizerContainer analyser={audioPlayer.analyser} />
+      
       <div className="container drum-machine-wrapper">
-        <DrumMachine />
+        <DrumMachine onAudioContextReady={handleAudioContextReady} />
+      </div>
+
+      <div className="container drum-machine-wrapper">
+        <Beatmaker audioCtx={drumAudioContext} playSound={drumPlaySound} />
       </div>
 
       {audioPlayer.currentBeat && (

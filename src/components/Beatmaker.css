@@ -1,0 +1,54 @@
+.saved-patterns {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #fff;
+  border: 3px solid #000;
+}
+
+.saved-patterns h3 {
+  text-transform: uppercase;
+  font-family: 'Press Start 2P', monospace;
+}
+
+/* Custom scrollbar for sequencer */
+.sequencer-grid::-webkit-scrollbar {
+  height: 12px;
+}
+
+.sequencer-grid::-webkit-scrollbar-track {
+  background: #212529;
+}
+
+.sequencer-grid::-webkit-scrollbar-thumb {
+  background: #92cc41;
+  border: 2px solid #000;
+}
+
+.sequencer-grid::-webkit-scrollbar-thumb:hover {
+  background: #76c442;
+}
+
+/* Animation for playing step */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.playing {
+  animation: pulse 0.15s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .saved-patterns {
+    padding: 0.5rem;
+  }
+
+  .saved-patterns h3 {
+    font-size: 10px;
+  }
+}
