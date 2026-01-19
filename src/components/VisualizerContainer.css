@@ -11,3 +11,7 @@
 .visualizer-button {
   font-size: clamp(0.6em, 2vw, 1em);
 }
+
+.visualizer-button.is-primary {
+  color: #92cc41 !important;
+}
