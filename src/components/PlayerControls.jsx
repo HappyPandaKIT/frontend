@@ -15,7 +15,8 @@ const PlayerControls = ({
   duration, 
   onProgressClick, 
   volume, 
-  onVolumeChange 
+  onVolumeChange,
+  songTitle
 }) => {
   return (
     <div className="player-controls-container">
@@ -50,6 +51,11 @@ const PlayerControls = ({
           className="player-controls-volume-slider"
         />
       </div>
+      {songTitle && (
+        <div className="player-controls-song-title">
+          {songTitle}
+        </div>
+      )}
     </div>
   );
 };
