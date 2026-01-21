@@ -15,7 +15,7 @@ import Footer from './components/Footer'
 
 const BEATS = [
   { id: 1, title: "Crystal Cave", bpm: 120, author: "cynicmusic", src: `${import.meta.env.BASE_URL}sounds/song18.mp3` },
-  { id: 2, title: "High Stakes, Low Chances", bpm: 140, author: "Ove Meela", src: `${import.meta.env.BASE_URL}sounds/HighStakes.mp3` }
+  { id: 2, title: "High Stakes,Low Chances", bpm: 140, author: "Ove Meela", src: `${import.meta.env.BASE_URL}sounds/HighStakes.mp3` }
 ];
 
 function App() {
@@ -31,7 +31,7 @@ function App() {
   const [sharedVolume, setSharedVolume] = useState(0.8); // Shared volume state
   
   // State for switching between DrumMachine, Beatmaker, and Playlist
-  const [activeMode, setActiveMode] = useState('drum'); // 'drum', 'beat', or 'playlist'
+  const [activeMode, setActiveMode] = useState('playlist'); // 'drum', 'beat', or 'playlist'
   const beatmakerRef = React.useRef(null);
 
   const handleAudioContextReady = useCallback((audioCtx, playSound, setVolume, analyser) => {
@@ -67,6 +67,7 @@ function App() {
           onProgressClick={audioPlayer.handleProgressBarClick}
           volume={audioPlayer.volume}
           onVolumeChange={audioPlayer.setVolume}
+          songTitle={audioPlayer.currentBeat.title}
         />
       )}
       
@@ -77,41 +78,6 @@ function App() {
             <i className="nes-icon trophy is-small"></i> CHOOSE YOUR BEAT
           </h3>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              className={`nes-btn ${activeMode === 'drum' ? 'is-primary' : ''}`}
-              onClick={() => {
-                if (beatmakerRef.current) {
-                  beatmakerRef.current.stop();
-                }
-                setActiveMode('drum');
-              }}
-              style={{ 
-                minWidth: '160px',
-                fontSize: '0.9rem',
-                padding: '0.75rem 1.5rem',
-                transition: 'all 0.3s ease',
-                transform: activeMode === 'drum' ? 'scale(1.05)' : 'scale(1)',
-                boxShadow: activeMode === 'drum' ? '0 0 20px rgba(146, 204, 65, 0.6)' : '4px 4px 0px #000'
-              }}
-            >
-              {activeMode === 'drum' && '♪ '}DRUM PAD{activeMode === 'drum' && ' ♪'}
-            </button>
-            <button
-              type="button"
-              className={`nes-btn ${activeMode === 'beat' ? 'is-success' : ''}`}
-              onClick={() => setActiveMode('beat')}
-              style={{ 
-                minWidth: '160px',
-                fontSize: '0.9rem',
-                padding: '0.75rem 1.5rem',
-                transition: 'all 0.3s ease',
-                transform: activeMode === 'beat' ? 'scale(1.05)' : 'scale(1)',
-                boxShadow: activeMode === 'beat' ? '0 0 20px rgba(146, 204, 65, 0.6)' : '4px 4px 0px #000'
-              }}
-            >
-              {activeMode === 'beat' && '♪ '}SEQUENCER{activeMode === 'beat' && ' ♪'}
-            </button>
             <button
               type="button"
               className={`nes-btn ${activeMode === 'playlist' ? 'is-warning' : ''}`}
@@ -131,6 +97,41 @@ function App() {
               }}
             >
               {activeMode === 'playlist' && '♪ '}TRACKS{activeMode === 'playlist' && ' ♪'}
+            </button>
+            <button
+              type="button"
+              className={`nes-btn ${activeMode === 'beat' ? 'is-success' : ''}`}
+              onClick={() => setActiveMode('beat')}
+              style={{ 
+                minWidth: '160px',
+                fontSize: '0.9rem',
+                padding: '0.75rem 1.5rem',
+                transition: 'all 0.3s ease',
+                transform: activeMode === 'beat' ? 'scale(1.05)' : 'scale(1)',
+                boxShadow: activeMode === 'beat' ? '0 0 20px rgba(146, 204, 65, 0.6)' : '4px 4px 0px #000'
+              }}
+            >
+              {activeMode === 'beat' && '♪ '}SEQUENCER{activeMode === 'beat' && ' ♪'}
+            </button>
+            <button
+              type="button"
+              className={`nes-btn ${activeMode === 'drum' ? 'is-primary' : ''}`}
+              onClick={() => {
+                if (beatmakerRef.current) {
+                  beatmakerRef.current.stop();
+                }
+                setActiveMode('drum');
+              }}
+              style={{ 
+                minWidth: '160px',
+                fontSize: '0.9rem',
+                padding: '0.75rem 1.5rem',
+                transition: 'all 0.3s ease',
+                transform: activeMode === 'drum' ? 'scale(1.05)' : 'scale(1)',
+                boxShadow: activeMode === 'drum' ? '0 0 20px rgba(146, 204, 65, 0.6)' : '4px 4px 0px #000'
+              }}
+            >
+              {activeMode === 'drum' && '♪ '}DRUM PAD{activeMode === 'drum' && ' ♪'}
             </button>
           </div>
         </div>
