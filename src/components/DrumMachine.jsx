@@ -6,7 +6,7 @@ import './DrumMachine.css';
 const MachineContainer = styled.div`
   margin-top: 2rem;
   padding: 1rem;
-  background-color: #cecece; /* Klassisches Gameboy/MPC Grau */
+  background-color: #2c3e50;
   border: 4px solid #000;
   box-shadow: 8px 8px 0px #212529;
   position: relative;
@@ -83,7 +83,7 @@ const PADS = [
   { id: 'Zap', key: '8', url: '/drums/zap.wav' },
 ];
 
-const DrumMachine = ({ onAudioContextReady }) => {
+const DrumMachine = ({ onAudioContextReady, isActive = true }) => {
   const [display, setDisplay] = useState("READY TO PLAY");
   const [activePad, setActivePad] = useState(null);
   const [volume, setVolume] = useState(0.8);
@@ -92,6 +92,7 @@ const DrumMachine = ({ onAudioContextReady }) => {
   const audioCtxRef = useRef(null);
   const buffersRef = useRef({}); // Speichert die geladenen Audiodaten
   const gainNodeRef = useRef(null); // Speichert den Gain Node für Volume Control
+  const analyserRef = useRef(null); // Analyser node for visualizers
 
   // 1. Audio Context Initialisieren und Sounds laden
   useEffect(() => {
@@ -100,10 +101,18 @@ const DrumMachine = ({ onAudioContextReady }) => {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       audioCtxRef.current = new AudioContext();
 
+      // Create analyser node for visualizers
+      analyserRef.current = audioCtxRef.current.createAnalyser();
+      analyserRef.current.fftSize = 256;
+      analyserRef.current.smoothingTimeConstant = 0.8;
+
       // Create master gain node for volume control
       gainNodeRef.current = audioCtxRef.current.createGain();
       gainNodeRef.current.gain.value = volume;
-      gainNodeRef.current.connect(audioCtxRef.current.destination);
+      
+      // Connect: gain -> analyser -> destination
+      gainNodeRef.current.connect(analyserRef.current);
+      analyserRef.current.connect(audioCtxRef.current.destination);
 
       // Sounds laden und decodieren (Asynchron)
       const loadPromises = PADS.map(async (pad) => {
@@ -125,7 +134,7 @@ const DrumMachine = ({ onAudioContextReady }) => {
       
       // Pass audio context and playSound function to parent
       if (onAudioContextReady) {
-        onAudioContextReady(audioCtxRef.current, playSound);
+        onAudioContextReady(audioCtxRef.current, playSound, setVolume, analyserRef.current);
       }
     };
 
@@ -518,6 +527,8 @@ const DrumMachine = ({ onAudioContextReady }) => {
   }, [volume]);
 
   useEffect(() => {
+    if (!isActive) return; // Don't listen to keys when not active
+    
     const handleKeyDown = (event) => {
       const key = event.key.toUpperCase();
       const pad = PADS.find(p => p.key === key);
@@ -528,7 +539,7 @@ const DrumMachine = ({ onAudioContextReady }) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [playSound]);
+  }, [playSound, isActive]);
 
   return (
     <MachineContainer className="nes-container is-rounded">

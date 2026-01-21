@@ -5,7 +5,7 @@ import './Beatmaker.css';
 const BeatmakerContainer = styled.div`
   margin-top: 2rem;
   padding: 1rem;
-  background-color: #cecece;
+  background-color: #2c3e50;
   border: 4px solid #000;
   box-shadow: 8px 8px 0px #212529;
   position: relative;
@@ -78,19 +78,19 @@ const SequencerGrid = styled.div`
 
 const GridTable = styled.div`
   display: grid;
-  grid-template-columns: 80px repeat(16, 1fr);
+  grid-template-columns: 100px repeat(16, 1fr);
   gap: 2px;
-  min-width: 800px;
+  min-width: 850px;
 
   @media (max-width: 768px) {
-    grid-template-columns: 60px repeat(16, 1fr);
-    min-width: 600px;
+    grid-template-columns: 70px repeat(16, 1fr);
+    min-width: 650px;
   }
 `;
 
 const TrackLabel = styled.div`
-  background-color: #cecece;
-  color: #000;
+  background-color: #2c3e50;
+  color: #d3d3d3;
   padding: 8px;
   border: 2px solid #000;
   font-size: 12px;
@@ -155,7 +155,7 @@ const TRACKS = [
 
 const STEPS = 16;
 
-const Beatmaker = ({ audioCtx, playSound }) => {
+const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume }, ref) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [bpm, setBpm] = useState(120);
   const [currentStep, setCurrentStep] = useState(0);
@@ -169,6 +169,7 @@ const Beatmaker = ({ audioCtx, playSound }) => {
   });
   const [savedPatterns, setSavedPatterns] = useState([]);
   const [patternName, setPatternName] = useState('');
+  const [volume, setVolumeLocal] = useState(0.8);
 
   const intervalRef = useRef(null);
   const nextStepTimeRef = useRef(0);
@@ -202,7 +203,7 @@ const Beatmaker = ({ audioCtx, playSound }) => {
 
   // Play current step
   const playCurrentStep = useCallback(() => {
-    if (!playSound) return;
+    if (!playSound || !audioCtxRef.current) return;
 
     TRACKS.forEach(track => {
       if (pattern[track][currentStep]) {
@@ -259,6 +260,11 @@ const Beatmaker = ({ audioCtx, playSound }) => {
     setCurrentStep(0);
     nextStepTimeRef.current = 0;
   }, []);
+
+  // Expose stop function to parent via ref
+  React.useImperativeHandle(ref, () => ({
+    stop
+  }), [stop]);
 
   // Save pattern
   const savePattern = useCallback(() => {
@@ -319,9 +325,30 @@ const Beatmaker = ({ audioCtx, playSound }) => {
 
   return (
     <BeatmakerContainer>
+      <div className="drum-machine-title">
+        BEATMAKER-2077
+      </div>
+      
       <Screen>
-        {isPlaying ? `PLAYING - STEP ${currentStep + 1}/${STEPS}` : 'BEATMAKER - READY'}
+        {isPlaying ? `PLAYING - STEP ${currentStep + 1}/${STEPS}` : (currentStep > 0 ? `PAUSED - STEP ${currentStep + 1}/${STEPS}` : 'BEATMAKER - READY')}
       </Screen>
+
+      <div className="drum-machine-volume-control">
+        <span className="drum-machine-volume-label">VOL:</span>
+        <input 
+          type="range" 
+          min="0" 
+          max="1" 
+          step="0.1" 
+          value={volume}
+          onChange={(e) => {
+            const newVolume = parseFloat(e.target.value);
+            setVolumeLocal(newVolume);
+            if (setVolume) setVolume(newVolume);
+          }}
+          className="drum-machine-volume-slider"
+        />
+      </div>
 
       <TransportControls>
         <button 
@@ -392,7 +419,7 @@ const Beatmaker = ({ audioCtx, playSound }) => {
                   key={`${track}-${step}`}
                   active={pattern[track][step]}
                   highlighted={step % 4 === 0}
-                  className={isPlaying && step === currentStep ? 'playing' : ''}
+                  className={step === currentStep && currentStep > 0 ? 'playing' : ''}
                   onClick={() => toggleStep(track, step)}
                 />
               ))}
@@ -402,14 +429,14 @@ const Beatmaker = ({ audioCtx, playSound }) => {
       </SequencerGrid>
 
       <PatternControls>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'stretch', flexWrap: 'wrap' }}>
           <input
             type="text"
             className="nes-input"
-            placeholder="Pattern name..."
+            placeholder="Please give me a name..."
             value={patternName}
             onChange={(e) => setPatternName(e.target.value)}
-            style={{ width: '200px', fontSize: '12px' }}
+            style={{ flex: '1', minWidth: '200px', fontSize: '12px', margin: 0 }}
           />
           <button 
             className="nes-btn is-success"
@@ -422,44 +449,65 @@ const Beatmaker = ({ audioCtx, playSound }) => {
 
       {savedPatterns.length > 0 && (
         <div className="saved-patterns">
-          <h3 style={{ fontSize: '14px', marginBottom: '10px' }}>SAVED PATTERNS</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {savedPatterns.map(saved => (
-              <div 
-                key={saved.id}
-                style={{ 
-                  display: 'flex', 
-                  gap: '10px', 
-                  alignItems: 'center',
-                  backgroundColor: '#fff',
-                  padding: '8px',
-                  border: '2px solid #000'
-                }}
-              >
-                <span style={{ flex: 1, fontSize: '12px', fontWeight: 'bold', color: '#000' }}>
-                  {saved.name} ({saved.bpm} BPM)
-                </span>
-                <button 
-                  className="nes-btn is-primary"
-                  style={{ fontSize: '10px' }}
-                  onClick={() => loadPattern(saved)}
+          <div className="beat-collection-title">BEAT COLLECTION</div>
+          <div className="patterns-scroll-container">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {savedPatterns.map((saved, index) => {
+              // Create appealing color combinations for each pattern
+              const colors = [
+                { bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', text: '#fff' },
+                { bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', text: '#fff' },
+                { bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', text: '#000' },
+                { bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', text: '#000' },
+                { bg: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', text: '#000' },
+                { bg: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', text: '#fff' },
+                { bg: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', text: '#000' },
+                { bg: 'linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%)', text: '#fff' }
+              ];
+              const colorScheme = colors[index % colors.length];
+              
+              return (
+                <div 
+                  key={saved.id}
+                  style={{ 
+                    display: 'flex', 
+                    gap: '10px', 
+                    alignItems: 'center',
+                    background: colorScheme.bg,
+                    padding: '10px',
+                    border: '3px solid #000',
+                    boxShadow: '4px 4px 0px #000',
+                    borderRadius: '4px'
+                  }}
                 >
-                  LOAD
-                </button>
-                <button 
-                  className="nes-btn is-error"
-                  style={{ fontSize: '10px' }}
-                  onClick={() => deletePattern(saved.id)}
-                >
-                  DEL
-                </button>
-              </div>
-            ))}
+                  <span style={{ flex: 1, fontSize: '12px', fontWeight: 'bold', color: colorScheme.text }}>
+                    {saved.name} ({saved.bpm} BPM)
+                  </span>
+                  <button 
+                    className="nes-btn is-primary"
+                    style={{ fontSize: '10px' }}
+                    onClick={() => loadPattern(saved)}
+                  >
+                    LOAD
+                  </button>
+                  <button 
+                    className="nes-btn is-error"
+                    style={{ fontSize: '10px' }}
+                    onClick={() => deletePattern(saved.id)}
+                  >
+                    DEL
+                  </button>
+                </div>
+              );
+            })}
+            </div>
           </div>
         </div>
       )}
     </BeatmakerContainer>
   );
-};
+});
+
+Beatmaker.displayName = 'Beatmaker';
 
 export default Beatmaker;

@@ -6,7 +6,6 @@ const BeatsTable = ({ beats, currentBeatId, onPlayTrack }) => {
       <table className="nes-table is-bordered is-centered is-dark" style={{width: '100%'}}>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Titel</th>
             <th>BPM</th>
             <th>Author</th>
@@ -16,7 +15,6 @@ const BeatsTable = ({ beats, currentBeatId, onPlayTrack }) => {
         <tbody>
           {beats.map((beat) => (
             <tr key={beat.id}>
-              <td>{beat.id}</td>
               <td>{beat.title}</td>
               <td>{beat.bpm}</td>
               <td>{beat.author}</td>

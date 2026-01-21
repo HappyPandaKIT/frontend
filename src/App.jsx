@@ -9,8 +9,7 @@ import DrumMachine from './components/DrumMachine'
 import Beatmaker from './components/Beatmaker'
 import PlayerControls from './components/PlayerControls'
 import FileUploadSection from './components/FileUploadSection'
-import UploadedTracksTable from './components/UploadedTracksTable'
-import BeatsTable from './components/BeatsTable'
+import Playlist from './components/Playlist'
 import ContactSection from './components/ContactSection'
 import Footer from './components/Footer'
 
@@ -27,10 +26,18 @@ function App() {
   // State for sharing audio context and playSound between DrumMachine and Beatmaker
   const [drumAudioContext, setDrumAudioContext] = useState(null);
   const [drumPlaySound, setDrumPlaySound] = useState(null);
+  const [drumSetVolume, setDrumSetVolume] = useState(null);
+  const [drumAnalyser, setDrumAnalyser] = useState(null);
+  
+  // State for switching between DrumMachine, Beatmaker, and Playlist
+  const [activeMode, setActiveMode] = useState('drum'); // 'drum', 'beat', or 'playlist'
+  const beatmakerRef = React.useRef(null);
 
-  const handleAudioContextReady = useCallback((audioCtx, playSound) => {
+  const handleAudioContextReady = useCallback((audioCtx, playSound, setVolume, analyser) => {
     setDrumAudioContext(audioCtx);
     setDrumPlaySound(() => playSound); // Wrap in arrow function to store function reference
+    setDrumSetVolume(() => setVolume); // Store the setVolume function
+    setDrumAnalyser(analyser); // Store the analyser node
   }, []);
 
   const handlePlayTrackWithDeletion = (trackId) => {
@@ -45,16 +52,8 @@ function App() {
       <Header />
       <ErrorDisplay error={displayError} />
       
-      <VisualizerContainer analyser={audioPlayer.analyser} />
+      <VisualizerContainer analyser={audioPlayer.analyser || drumAnalyser} />
       
-      <div className="container drum-machine-wrapper">
-        <DrumMachine onAudioContextReady={handleAudioContextReady} />
-      </div>
-
-      <div className="container drum-machine-wrapper">
-        <Beatmaker audioCtx={drumAudioContext} playSound={drumPlaySound} />
-      </div>
-
       {audioPlayer.currentBeat && (
         <PlayerControls
           isPlaying={audioPlayer.isPlaying}
@@ -66,26 +65,92 @@ function App() {
           onVolumeChange={audioPlayer.setVolume}
         />
       )}
-
-      <hr className="nes-separator separator" />
-
-      <FileUploadSection onFileUpload={handleFileUpload} />
-
-      <UploadedTracksTable
-        tracks={uploadedTracks}
-        currentBeatId={audioPlayer.currentBeat?.id}
-        onPlayTrack={audioPlayer.playTrack}
-        onDeleteTrack={handlePlayTrackWithDeletion}
-      />
-
-      <hr className="nes-separator separator" />
       
-      <BeatsTable
-        beats={BEATS}
-        currentBeatId={audioPlayer.currentBeat?.id}
-        onPlayTrack={audioPlayer.playTrack}
-      />
-      <Footer />
+      {/* Mode Switcher */}
+      <div className="container" style={{ marginBottom: '2rem' }}>
+        <div className="nes-container is-rounded is-dark" style={{ padding: '1.5rem' }}>
+          <h3 style={{ marginTop: 0, marginBottom: '1.25rem', fontSize: '1rem', textAlign: 'center', letterSpacing: '2px' }}>
+            <i className="nes-icon trophy is-small"></i> CHOOSE YOUR BEAT
+          </h3>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className={`nes-btn ${activeMode === 'drum' ? 'is-primary' : ''}`}
+              onClick={() => {
+                if (beatmakerRef.current) {
+                  beatmakerRef.current.stop();
+                }
+                setActiveMode('drum');
+              }}
+              style={{ 
+                minWidth: '160px',
+                fontSize: '0.9rem',
+                padding: '0.75rem 1.5rem',
+                transition: 'all 0.3s ease',
+                transform: activeMode === 'drum' ? 'scale(1.05)' : 'scale(1)',
+                boxShadow: activeMode === 'drum' ? '0 0 20px rgba(146, 204, 65, 0.6)' : '4px 4px 0px #000'
+              }}
+            >
+              {activeMode === 'drum' && '♪ '}DRUM PAD{activeMode === 'drum' && ' ♪'}
+            </button>
+            <button
+              type="button"
+              className={`nes-btn ${activeMode === 'beat' ? 'is-success' : ''}`}
+              onClick={() => setActiveMode('beat')}
+              style={{ 
+                minWidth: '160px',
+                fontSize: '0.9rem',
+                padding: '0.75rem 1.5rem',
+                transition: 'all 0.3s ease',
+                transform: activeMode === 'beat' ? 'scale(1.05)' : 'scale(1)',
+                boxShadow: activeMode === 'beat' ? '0 0 20px rgba(146, 204, 65, 0.6)' : '4px 4px 0px #000'
+              }}
+            >
+              {activeMode === 'beat' && '♪ '}SEQUENCER{activeMode === 'beat' && ' ♪'}
+            </button>
+            <button
+              type="button"
+              className={`nes-btn ${activeMode === 'playlist' ? 'is-warning' : ''}`}
+              onClick={() => {
+                if (beatmakerRef.current) {
+                  beatmakerRef.current.stop();
+                }
+                setActiveMode('playlist');
+              }}
+              style={{ 
+                minWidth: '160px',
+                fontSize: '0.9rem',
+                padding: '0.75rem 1.5rem',
+                transition: 'all 0.3s ease',
+                transform: activeMode === 'playlist' ? 'scale(1.05)' : 'scale(1)',
+                boxShadow: activeMode === 'playlist' ? '0 0 20px rgba(146, 204, 65, 0.6)' : '4px 4px 0px #000'
+              }}
+            >
+              {activeMode === 'playlist' && '♪ '}TRACKS{activeMode === 'playlist' && ' ♪'}
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      {/* Keep DrumMachine mounted to maintain audio context, but hide when not active */}
+      <div className="container drum-machine-wrapper" style={{ display: activeMode === 'drum' ? 'block' : 'none' }}>
+        <DrumMachine onAudioContextReady={handleAudioContextReady} isActive={activeMode === 'drum'} />
+      </div>
+      
+      <div className="container drum-machine-wrapper" style={{ display: activeMode === 'beat' ? 'block' : 'none' }}>
+        <Beatmaker ref={beatmakerRef} audioCtx={drumAudioContext} playSound={drumPlaySound} setVolume={drumSetVolume} />
+      </div>
+
+      <div className="container" style={{ display: activeMode === 'playlist' ? 'block' : 'none', maxWidth: '800px' }}>
+        <Playlist
+          beats={BEATS}
+          uploadedTracks={uploadedTracks}
+          currentBeatId={audioPlayer.currentBeat?.id}
+          onPlayTrack={audioPlayer.playTrack}
+          onDeleteTrack={handlePlayTrackWithDeletion}
+          onFileUpload={handleFileUpload}
+        />
+      </div>
     </div>
   );
 }

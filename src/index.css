@@ -32,7 +32,13 @@ body {
   font-family: 'Press Start 2P', cursive;
   background-color: #212529;
   color: #fff;
-  cursor: url('https://unpkg.com/nes.css/assets/cursor-click.png'), pointer; /* Retro Cursor */
+}
+
+/* Retro Cursor replaces pointer/hand on clickable elements */
+a:hover, button:hover, input[type="button"]:hover, input[type="submit"]:hover, 
+label[for]:hover, .playlist-item:hover, [role="button"]:hover,
+.drum-pad:hover, .nes-btn:hover, .player-controls-progress:hover {
+  cursor: url('https://unpkg.com/nes.css/assets/cursor-click.png'), pointer !important;
 }
 
 .container {
