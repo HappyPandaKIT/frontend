@@ -132,6 +132,13 @@
   transition: all 0.2s;
 }
 
+.pause-icon {
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .playlist-item:hover .playlist-play-icon {
   background-color: #76c442;
   transform: scale(1.1);
@@ -140,6 +147,13 @@
 .playlist-item-active .playlist-play-icon {
   background-color: #ffbe0b;
   animation: pulse 1s infinite;
+}
+
+.pause-icon {
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes pulse {

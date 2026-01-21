@@ -20,35 +20,83 @@ import InkWaterVisualizer from './InkWaterVisualizer';
 import NeuralNetVisualizer from './NeuralNetVisualizer';
 import ExpandingRingsVisualizer from './ExpandingRingsVisualizer';
 
-const VisualizerContainer = ({ analyser }) => {
+const VisualizerContainer = ({ analyser, drumAnalyser }) => {
   const [visualizerType, setVisualizerType] = useState('bars');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Create a merged analyser that combines data from both sources
+  // Use state instead of ref to trigger re-renders when analyser is ready
+  const [activeAnalyser, setActiveAnalyser] = React.useState(null);
+  
+  React.useEffect(() => {
+    if (!analyser && !drumAnalyser) {
+      setActiveAnalyser(null);
+      return;
+    }
+
+    // Create a virtual analyser object that merges data from both sources
+    const mergedAnalyser = {
+      frequencyBinCount: (analyser?.frequencyBinCount || drumAnalyser?.frequencyBinCount || 128),
+      fftSize: (analyser?.fftSize || drumAnalyser?.fftSize || 256),
+      getByteFrequencyData: (dataArray) => {
+        const tempArray1 = analyser ? new Uint8Array(analyser.frequencyBinCount) : null;
+        const tempArray2 = drumAnalyser ? new Uint8Array(drumAnalyser.frequencyBinCount) : null;
+        
+        if (tempArray1) analyser.getByteFrequencyData(tempArray1);
+        if (tempArray2) drumAnalyser.getByteFrequencyData(tempArray2);
+        
+        // Merge the data by taking the maximum value at each frequency bin
+        for (let i = 0; i < dataArray.length; i++) {
+          const val1 = tempArray1 ? tempArray1[i] : 0;
+          const val2 = tempArray2 ? tempArray2[i] : 0;
+          dataArray[i] = Math.max(val1, val2);
+        }
+      },
+      getByteTimeDomainData: (dataArray) => {
+        // For time domain, prefer the active analyser or fall back to drum analyser
+        if (analyser) {
+          analyser.getByteTimeDomainData(dataArray);
+        } else if (drumAnalyser) {
+          drumAnalyser.getByteTimeDomainData(dataArray);
+        }
+      }
+    };
+    
+    setActiveAnalyser(mergedAnalyser);
+  }, [analyser, drumAnalyser]);
 
   const visualizers = {
-    bars: <BarVisualizer analyser={analyser} />,
-    circle: <CircleVisualizer analyser={analyser} />,
-    waveform: <WaveformVisualizer analyser={analyser} />,
-    matrix: <MatrixRainVisualizer analyser={analyser} />,
-    pulse: <PulseRingsVisualizer analyser={analyser} />,
-    wormhole: <WormholeVisualizer analyser={analyser} />,
-    blocks: <BlocksVisualizer analyser={analyser} />,
-    particles: <OrbitingParticlesVisualizer analyser={analyser} />,
-    neon: <NeonGridVisualizer analyser={analyser} />,
-    scope: <OscilloscopeVisualizer analyser={analyser} />,
-    circwave: <CircularWaveVisualizer analyser={analyser} />,
-    sun: <SunVisualizer analyser={analyser} />,
-    voronoi: <VoronoiVisualizer analyser={analyser} />,
-    fractal: <FractalVisualizer analyser={analyser} />,
-    attractor: <AttractorVisualizer analyser={analyser} />,
-    flow: <FlowFieldVisualizer analyser={analyser} />,
-    ink: <InkWaterVisualizer analyser={analyser} />,
-    neural: <NeuralNetVisualizer analyser={analyser} />,
-    rings: <ExpandingRingsVisualizer analyser={analyser} />
+    bars: <BarVisualizer analyser={activeAnalyser} />,
+    circle: <CircleVisualizer analyser={activeAnalyser} />,
+    waveform: <WaveformVisualizer analyser={activeAnalyser} />,
+    matrix: <MatrixRainVisualizer analyser={activeAnalyser} />,
+    pulse: <PulseRingsVisualizer analyser={activeAnalyser} />,
+    wormhole: <WormholeVisualizer analyser={activeAnalyser} />,
+    blocks: <BlocksVisualizer analyser={activeAnalyser} />,
+    particles: <OrbitingParticlesVisualizer analyser={activeAnalyser} />,
+    neon: <NeonGridVisualizer analyser={activeAnalyser} />,
+    scope: <OscilloscopeVisualizer analyser={activeAnalyser} />,
+    circwave: <CircularWaveVisualizer analyser={activeAnalyser} />,
+    sun: <SunVisualizer analyser={activeAnalyser} />,
+    voronoi: <VoronoiVisualizer analyser={activeAnalyser} />,
+    fractal: <FractalVisualizer analyser={activeAnalyser} />,
+    attractor: <AttractorVisualizer analyser={activeAnalyser} />,
+    flow: <FlowFieldVisualizer analyser={activeAnalyser} />,
+    ink: <InkWaterVisualizer analyser={activeAnalyser} />,
+    neural: <NeuralNetVisualizer analyser={activeAnalyser} />,
+    rings: <ExpandingRingsVisualizer analyser={activeAnalyser} />
   };
+
+  // Main visualizers shown as buttons
+  const mainVisualizers = ['bars', 'circle', 'waveform', 'matrix', 'blocks', 'neon', 'attractor'];
+  
+  // Other visualizers in dropdown
+  const otherVisualizers = ['pulse', 'wormhole', 'particles', 'scope', 'circwave', 'sun', 'voronoi', 'fractal', 'flow', 'ink', 'neural', 'rings'];
 
   return (
     <div className="nes-container is-dark visualizer-container">
       <div className="visualizer-controls">
-        {['bars', 'circle', 'waveform', 'matrix', 'pulse', 'wormhole', 'blocks', 'particles', 'neon', 'scope', 'circwave', 'sun', 'voronoi', 'fractal', 'attractor', 'flow', 'ink', 'neural', 'rings'].map((type) => (
+        {mainVisualizers.map((type) => (
           <button
             key={type}
             type="button"
@@ -58,6 +106,33 @@ const VisualizerContainer = ({ analyser }) => {
             {type.toUpperCase()}
           </button>
         ))}
+        
+        <div className="visualizer-dropdown-container">
+          <button
+            type="button"
+            className={`nes-btn visualizer-button ${otherVisualizers.includes(visualizerType) ? 'is-primary' : ''}`}
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
+            ▼
+          </button>
+          {dropdownOpen && (
+            <div className="visualizer-dropdown-menu">
+              {otherVisualizers.map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  className={`visualizer-dropdown-item ${visualizerType === type ? 'is-selected' : ''}`}
+                  onClick={() => {
+                    setVisualizerType(type);
+                    setDropdownOpen(false);
+                  }}
+                >
+                  {type.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {visualizers[visualizerType]}

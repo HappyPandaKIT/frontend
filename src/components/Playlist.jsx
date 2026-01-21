@@ -1,7 +1,7 @@
 import React from 'react';
 import './Playlist.css';
 
-const Playlist = ({ beats, uploadedTracks, currentBeatId, onPlayTrack, onDeleteTrack, onFileUpload }) => {
+const Playlist = ({ beats, uploadedTracks, currentBeatId, isPlaying, onPlayTrack, onTogglePlayPause, onDeleteTrack, onFileUpload }) => {
   const allTracks = [
     ...beats.map(beat => ({ ...beat, type: 'local' })),
     ...uploadedTracks.map(track => ({ ...track, type: 'uploaded' }))
@@ -35,8 +35,19 @@ const Playlist = ({ beats, uploadedTracks, currentBeatId, onPlayTrack, onDeleteT
             onClick={() => onPlayTrack(track)}
             style={{ cursor: 'pointer' }}
           >
-            <div className="playlist-play-icon">
-              {currentBeatId === track.id ? '▶' : '♪'}
+            <div 
+              className="playlist-play-icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (currentBeatId === track.id) {
+                  onTogglePlayPause();
+                } else {
+                  onPlayTrack(track);
+                }
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              {currentBeatId === track.id ? (isPlaying ? <span className="pause-icon">▮▮</span> : '▶') : '♪'}
             </div>
             <div className="playlist-info">
               <div className="playlist-title">{track.title}</div>

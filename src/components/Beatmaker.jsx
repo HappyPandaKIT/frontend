@@ -155,7 +155,7 @@ const TRACKS = [
 
 const STEPS = 16;
 
-const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume }, ref) => {
+const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume, sharedVolume = 0.8, onVolumeChange }, ref) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [bpm, setBpm] = useState(120);
   const [currentStep, setCurrentStep] = useState(0);
@@ -169,15 +169,20 @@ const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume }, ref) => 
   });
   const [savedPatterns, setSavedPatterns] = useState([]);
   const [patternName, setPatternName] = useState('');
-  const [volume, setVolumeLocal] = useState(0.8);
+  const volume = sharedVolume; // Use shared volume from parent
 
   const intervalRef = useRef(null);
   const nextStepTimeRef = useRef(0);
   const audioCtxRef = useRef(null);
 
-  // Store audioCtx reference
+  // Store audioCtx reference and sync volume from DrumMachine
   useEffect(() => {
     audioCtxRef.current = audioCtx;
+    // Get current volume from DrumMachine's gain node if available
+    if (audioCtx && audioCtx.destination) {
+      // The gain node is already set by DrumMachine, so we read its current value
+      // This happens through the setVolume callback passed from parent
+    }
   }, [audioCtx]);
 
   // Calculate step interval based on BPM (16th notes)
@@ -343,8 +348,8 @@ const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume }, ref) => 
           value={volume}
           onChange={(e) => {
             const newVolume = parseFloat(e.target.value);
-            setVolumeLocal(newVolume);
-            if (setVolume) setVolume(newVolume);
+            if (onVolumeChange) onVolumeChange(newVolume); // Update shared volume
+            if (setVolume) setVolume(newVolume); // Update gain node
           }}
           className="drum-machine-volume-slider"
         />

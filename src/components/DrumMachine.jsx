@@ -83,10 +83,11 @@ const PADS = [
   { id: 'Zap', key: '8', url: '/drums/zap.wav' },
 ];
 
-const DrumMachine = ({ onAudioContextReady, isActive = true }) => {
+const DrumMachine = ({ onAudioContextReady, isActive = true, sharedVolume = 0.8, onVolumeChange }) => {
   const [display, setDisplay] = useState("READY TO PLAY");
   const [activePad, setActivePad] = useState(null);
-  const [volume, setVolume] = useState(0.8);
+  const volume = sharedVolume; // Use shared volume from parent
+  const setVolume = onVolumeChange || (() => {}); // Use parent's volume change handler
   
   // Refs für Audio Context und Buffer-Speicher
   const audioCtxRef = useRef(null);
@@ -131,20 +132,16 @@ const DrumMachine = ({ onAudioContextReady, isActive = true }) => {
 
       await Promise.all(loadPromises);
       setDisplay("READY");
-      
-      // Pass audio context and playSound function to parent
-      if (onAudioContextReady) {
-        onAudioContextReady(audioCtxRef.current, playSound, setVolume, analyserRef.current);
-      }
     };
 
     initAudio();
 
     // Cleanup (Context schließen wenn Komponente unmountet)
+    // Don't close the context as it's shared with Beatmaker
     return () => {
-      if (audioCtxRef.current) audioCtxRef.current.close();
+      // Keep audio context alive for Beatmaker
     };
-  }, [onAudioContextReady]);
+  }, []);
 
   // 2. Funktion zum Abspielen
   const playSound = useCallback((padId) => {
@@ -277,7 +274,7 @@ const DrumMachine = ({ onAudioContextReady, isActive = true }) => {
     filter.connect(gain);
     gain.connect(gainNodeRef.current);
     
-    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.setValueAtTime(0.6, now);
     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
     
     noise.start(now);
@@ -525,6 +522,19 @@ const DrumMachine = ({ onAudioContextReady, isActive = true }) => {
       gainNodeRef.current.gain.value = volume;
     }
   }, [volume]);
+
+  // Notify parent component when audio context and functions are ready
+  useEffect(() => {
+    if (audioCtxRef.current && analyserRef.current && onAudioContextReady) {
+      const setVolumeFunc = (newVolume) => {
+        if (gainNodeRef.current) {
+          gainNodeRef.current.gain.value = newVolume;
+          setVolume(newVolume);
+        }
+      };
+      onAudioContextReady(audioCtxRef.current, playSound, setVolumeFunc, analyserRef.current);
+    }
+  }, [onAudioContextReady, playSound]);
 
   useEffect(() => {
     if (!isActive) return; // Don't listen to keys when not active

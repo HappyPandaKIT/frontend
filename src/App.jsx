@@ -28,6 +28,7 @@ function App() {
   const [drumPlaySound, setDrumPlaySound] = useState(null);
   const [drumSetVolume, setDrumSetVolume] = useState(null);
   const [drumAnalyser, setDrumAnalyser] = useState(null);
+  const [sharedVolume, setSharedVolume] = useState(0.8); // Shared volume state
   
   // State for switching between DrumMachine, Beatmaker, and Playlist
   const [activeMode, setActiveMode] = useState('drum'); // 'drum', 'beat', or 'playlist'
@@ -52,7 +53,10 @@ function App() {
       <Header />
       <ErrorDisplay error={displayError} />
       
-      <VisualizerContainer analyser={audioPlayer.analyser || drumAnalyser} />
+      <VisualizerContainer 
+        analyser={audioPlayer.analyser} 
+        drumAnalyser={drumAnalyser} 
+      />
       
       {audioPlayer.currentBeat && (
         <PlayerControls
@@ -134,11 +138,23 @@ function App() {
       
       {/* Keep DrumMachine mounted to maintain audio context, but hide when not active */}
       <div className="container drum-machine-wrapper" style={{ display: activeMode === 'drum' ? 'block' : 'none' }}>
-        <DrumMachine onAudioContextReady={handleAudioContextReady} isActive={activeMode === 'drum'} />
+        <DrumMachine 
+          onAudioContextReady={handleAudioContextReady} 
+          isActive={activeMode === 'drum'}
+          sharedVolume={sharedVolume}
+          onVolumeChange={setSharedVolume}
+        />
       </div>
       
       <div className="container drum-machine-wrapper" style={{ display: activeMode === 'beat' ? 'block' : 'none' }}>
-        <Beatmaker ref={beatmakerRef} audioCtx={drumAudioContext} playSound={drumPlaySound} setVolume={drumSetVolume} />
+        <Beatmaker 
+          ref={beatmakerRef} 
+          audioCtx={drumAudioContext} 
+          playSound={drumPlaySound} 
+          setVolume={drumSetVolume}
+          sharedVolume={sharedVolume}
+          onVolumeChange={setSharedVolume}
+        />
       </div>
 
       <div className="container" style={{ display: activeMode === 'playlist' ? 'block' : 'none', maxWidth: '800px' }}>
@@ -146,7 +162,9 @@ function App() {
           beats={BEATS}
           uploadedTracks={uploadedTracks}
           currentBeatId={audioPlayer.currentBeat?.id}
+          isPlaying={audioPlayer.isPlaying}
           onPlayTrack={audioPlayer.playTrack}
+          onTogglePlayPause={audioPlayer.togglePlayPause}
           onDeleteTrack={handlePlayTrackWithDeletion}
           onFileUpload={handleFileUpload}
         />
