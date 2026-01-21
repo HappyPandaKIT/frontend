@@ -83,18 +83,61 @@ const CircleVisualizer = ({ analyser }) => {
 
       ctx.shadowBlur = 0;
 
-      // Draw center circle that pulses with bass
-      const centerRadius = 20 + (bassAvg / 255) * 25;
+      // Draw fancy vibrant center circle that pulses with bass
+      const centerRadius = 25 + (bassAvg / 255) * 30;
       
+      // Create multi-layer gradient for depth
       const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, centerRadius);
-      gradient.addColorStop(0, `hsl(${hueShift}, 80%, 60%)`);
-      gradient.addColorStop(0.5, `hsl(${hueShift + 40}, 70%, 50%)`);
-      gradient.addColorStop(1, `hsl(${hueShift + 80}, 60%, 30%)`);
+      gradient.addColorStop(0, `hsl(${hueShift + 180}, 100%, 70%)`); // Bright complementary center
+      gradient.addColorStop(0.3, `hsl(${hueShift + 60}, 90%, 60%)`); // Vibrant mid
+      gradient.addColorStop(0.6, `hsl(${hueShift}, 85%, 55%)`); // Rich main color
+      gradient.addColorStop(1, `hsl(${hueShift + 40}, 70%, 35%)`); // Deep edge
+      
+      // Add glow effect
+      ctx.shadowBlur = 20 + (bassAvg / 255) * 25;
+      ctx.shadowColor = `hsl(${hueShift}, 100%, 60%)`;
       
       ctx.beginPath();
       ctx.arc(centerX, centerY, centerRadius, 0, Math.PI * 2);
       ctx.fillStyle = gradient;
       ctx.fill();
+      
+      // Add bright inner highlight
+      const highlightGradient = ctx.createRadialGradient(
+        centerX - centerRadius * 0.2, 
+        centerY - centerRadius * 0.2, 
+        0,
+        centerX, 
+        centerY, 
+        centerRadius * 0.5
+      );
+      highlightGradient.addColorStop(0, `hsla(${hueShift + 180}, 100%, 90%, 0.8)`);
+      highlightGradient.addColorStop(1, `hsla(${hueShift + 180}, 100%, 70%, 0)`);
+      
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, centerRadius, 0, Math.PI * 2);
+      ctx.fillStyle = highlightGradient;
+      ctx.fill();
+      
+      // Add rotating accent ring
+      const ringRotation = (Date.now() / 1000) * 2; // Rotate over time
+      const ringRadius = centerRadius * 0.7;
+      const ringThickness = 2 + (midAvg / 255) * 3;
+      
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = `hsl(${(hueShift + 120) % 360}, 100%, 60%)`;
+      
+      for (let i = 0; i < 12; i++) {
+        const angle = (Math.PI * 2 / 12) * i + ringRotation;
+        const intensity = 0.5 + 0.5 * Math.sin(angle * 2 + ringRotation);
+        const x = centerX + Math.cos(angle) * ringRadius;
+        const y = centerY + Math.sin(angle) * ringRadius;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, ringThickness * intensity, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${(hueShift + 240) % 360}, 100%, 70%, ${0.6 + intensity * 0.4})`;
+        ctx.fill();
+      }
 
       animationIdRef.current = requestAnimationFrame(draw);
     };

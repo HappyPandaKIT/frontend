@@ -88,10 +88,22 @@ const VisualizerContainer = ({ analyser, drumAnalyser }) => {
   };
 
   // Main visualizers shown as buttons
-  const mainVisualizers = ['bars', 'circle', 'waveform', 'matrix', 'blocks', 'neon', 'attractor'];
+  const mainVisualizers = ['bars', 'circle', 'waveform', 'matrix', 'blocks', 'attractor'];
   
   // Other visualizers in dropdown
-  const otherVisualizers = ['pulse', 'wormhole', 'particles', 'scope', 'circwave', 'sun', 'voronoi', 'fractal', 'flow', 'ink', 'neural', 'rings'];
+  const otherVisualizers = ['neon', 'pulse', 'wormhole', 'particles', 'scope', 'circwave', 'sun', 'voronoi', 'fractal', 'flow', 'ink', 'neural', 'rings'];
+
+  // Custom display names for visualizers
+  const visualizerNames = {
+    'neon': 'GRID',
+    'circwave': 'CIRCWAVE',
+    'scope': 'SCOPE',
+    'voronoi': 'CONSTELLATION'
+  };
+
+  const getVisualizerName = (type) => {
+    return visualizerNames[type] || type.toUpperCase();
+  };
 
   return (
     <div className="nes-container is-dark visualizer-container">
@@ -103,7 +115,7 @@ const VisualizerContainer = ({ analyser, drumAnalyser }) => {
             className={`nes-btn visualizer-button ${visualizerType === type ? 'is-primary' : ''}`}
             onClick={() => setVisualizerType(type)}
           >
-            {type.toUpperCase()}
+            {getVisualizerName(type)}
           </button>
         ))}
         
@@ -127,7 +139,7 @@ const VisualizerContainer = ({ analyser, drumAnalyser }) => {
                     setDropdownOpen(false);
                   }}
                 >
-                  {type.toUpperCase()}
+                  {getVisualizerName(type)}
                 </button>
               ))}
             </div>
