@@ -19,6 +19,7 @@ import FlowFieldVisualizer from './FlowFieldVisualizer';
 import InkWaterVisualizer from './InkWaterVisualizer';
 import NeuralNetVisualizer from './NeuralNetVisualizer';
 import ExpandingRingsVisualizer from './ExpandingRingsVisualizer';
+import CometShowerVisualizer from './CometShowerVisualizer';
 
 const VisualizerContainer = ({ analyser, drumAnalyser }) => {
   const [visualizerType, setVisualizerType] = useState('bars');
@@ -84,14 +85,15 @@ const VisualizerContainer = ({ analyser, drumAnalyser }) => {
     flow: <FlowFieldVisualizer analyser={activeAnalyser} />,
     ink: <InkWaterVisualizer analyser={activeAnalyser} />,
     neural: <NeuralNetVisualizer analyser={activeAnalyser} />,
-    rings: <ExpandingRingsVisualizer analyser={activeAnalyser} />
+    rings: <ExpandingRingsVisualizer analyser={activeAnalyser} />,
+    comet: <CometShowerVisualizer analyser={activeAnalyser} />
   };
 
   // Main visualizers shown as buttons
   const mainVisualizers = ['bars', 'circle', 'waveform', 'matrix', 'blocks', 'attractor'];
   
   // Other visualizers in dropdown
-  const otherVisualizers = ['neon', 'pulse', 'wormhole', 'particles', 'scope', 'circwave', 'sun', 'voronoi', 'fractal', 'flow', 'ink', 'neural', 'rings'];
+  const otherVisualizers = ['neon', 'pulse', 'wormhole', 'particles', 'scope', 'circwave', 'sun', 'voronoi', 'fractal', 'flow', 'ink', 'neural', 'rings', 'comet'];
 
   // Custom display names for visualizers
   const visualizerNames = {

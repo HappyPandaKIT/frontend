@@ -14,87 +14,146 @@ const PulseRingsVisualizer = ({ analyser }) => {
     const centerY = canvas.height / 2;
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-    let rings = [];
+    let beatScale = 1;
+    let targetScale = 1;
+    let lastBeatTime = 0;
+
+    // Simple heart shape path function
+    const drawHeart = (x, y, size) => {
+      ctx.beginPath();
+      const topCurveHeight = size * 0.3;
+      ctx.moveTo(x, y + topCurveHeight);
+      // Left side
+      ctx.bezierCurveTo(
+        x, y, 
+        x - size / 2, y, 
+        x - size / 2, y + topCurveHeight
+      );
+      ctx.bezierCurveTo(
+        x - size / 2, y + (size + topCurveHeight) / 2, 
+        x, y + (size + topCurveHeight) / 2, 
+        x, y + size
+      );
+      // Right side
+      ctx.bezierCurveTo(
+        x, y + (size + topCurveHeight) / 2,
+        x + size / 2, y + (size + topCurveHeight) / 2,
+        x + size / 2, y + topCurveHeight
+      );
+      ctx.bezierCurveTo(
+        x + size / 2, y,
+        x, y,
+        x, y + topCurveHeight
+      );
+      ctx.closePath();
+    };
 
     const draw = () => {
       animationIdRef.current = requestAnimationFrame(draw);
       analyser.getByteFrequencyData(dataArray);
 
-      // Clear canvas
-      ctx.fillStyle = '#212529';
+      // Clear canvas with dark background
+      ctx.fillStyle = '#0a0a0a';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Get average frequency for pulse
+      // Get bass frequency for beat detection
+      const bassSum = dataArray.slice(0, Math.floor(dataArray.length * 0.15))
+        .reduce((s, v) => s + v, 0);
+      const bassAvg = bassSum / Math.floor(dataArray.length * 0.15) / 255;
+
+      // Get overall average for continuous responsiveness
       let sum = 0;
       for (let i = 0; i < dataArray.length; i++) {
         sum += dataArray[i];
       }
       const average = sum / dataArray.length / 255;
 
-      // Create new ring when pulse is strong
-      if (average > 0.3) {
-        rings.push({
-          radius: 10,
-          maxRadius: 150,
-          life: 1,
-          frequency: average
-        });
+      // Beat detection with lower threshold for more responsiveness
+      const currentTime = Date.now();
+      if (bassAvg > 0.4 && currentTime - lastBeatTime > 250) {
+        targetScale = 1.25 + bassAvg * 0.3;
+        lastBeatTime = currentTime;
       }
 
-      // Draw center nucleus
-      const centerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 15);
-      centerGradient.addColorStop(0, '#ff006e');
-      centerGradient.addColorStop(0.5, '#8b2fc9');
-      centerGradient.addColorStop(1, '#3a86ff');
-      ctx.fillStyle = centerGradient;
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 15, 0, Math.PI * 2);
+      // Smooth scale interpolation with faster response
+      beatScale += (targetScale - beatScale) * 0.25;
+      targetScale += (1 - targetScale) * 0.15; // Return to normal faster
+
+      // Base heart size with beat scale + continuous audio response
+      const baseSize = 80;
+      const heartSize = baseSize * beatScale * (1 + average * 0.15);
+
+      // Draw main heart with gradient
+      const gradient = ctx.createRadialGradient(
+        centerX, centerY - 10, 0,
+        centerX, centerY, heartSize
+      );
+      gradient.addColorStop(0, '#ff006e');
+      gradient.addColorStop(0.6, '#d90058');
+      gradient.addColorStop(1, '#a00042');
+
+      drawHeart(centerX, centerY - 40, heartSize);
+      ctx.fillStyle = gradient;
       ctx.fill();
-      ctx.strokeStyle = '#3a86ff';
+
+      // Add glow effect based on bass
+      ctx.shadowBlur = 20 + bassAvg * 40;
+      ctx.shadowColor = '#ff006e';
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Draw heart outline
+      ctx.strokeStyle = '#ff0080';
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Draw and update rings
-      rings = rings.filter(ring => ring.life > 0);
+      // Draw pulse waves emanating from heart as heart shapes
+      const numWaves = 3;
+      for (let i = 0; i < numWaves; i++) {
+        const wavePhase = (Date.now() / 600 + i * 0.8) % 1.75; // Faster speed and longer duration
+        const waveSize = heartSize + wavePhase * 70; // Travel further
+        const waveOpacity = Math.max(0, 1 - wavePhase / 2.5) * bassAvg;
 
-      rings.forEach((ring, idx) => {
-        // Calculate color based on frequency
-        if (ring.frequency > 0.8) ctx.strokeStyle = '#ff006e'; // Magenta
-        else if (ring.frequency > 0.6) ctx.strokeStyle = '#fb5607'; // Orange
-        else if (ring.frequency > 0.4) ctx.strokeStyle = '#ffbe0b'; // Yellow
-        else if (ring.frequency > 0.2) ctx.strokeStyle = '#06ffa5'; // Cyan
-        else ctx.strokeStyle = '#3a86ff'; // Blue
-
-        // Fade line width and opacity
-        ctx.lineWidth = 3 * ring.life;
-        ctx.globalAlpha = ring.life * 0.8;
-
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, ring.radius, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Expand ring
-        ring.radius += 2;
-        ring.life -= 0.02;
-      });
+        if (waveOpacity > 0.1) {
+          ctx.globalAlpha = waveOpacity * 0.5;
+          ctx.strokeStyle = '#ff006e';
+          ctx.lineWidth = 2;
+          drawHeart(centerX, centerY - 40, waveSize);
+          ctx.stroke();
+        }
+      }
 
       ctx.globalAlpha = 1;
 
-      // Draw frequency bar around center for extra feedback
-      ctx.strokeStyle = '#ffbe0b';
+      // Draw waveform line at bottom using actual audio data
+      const waveformData = new Uint8Array(analyser.fftSize);
+      analyser.getByteTimeDomainData(waveformData);
+      
+      const lineY = canvas.height - 80;
+      const lineHeight = 40;
+      ctx.strokeStyle = '#ff006e';
       ctx.lineWidth = 2;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#ff006e';
+      
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 40 + average * 30, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // Draw grid reference circles
-      ctx.strokeStyle = 'rgba(6, 255, 165, 0.15)';
-      ctx.lineWidth = 1;
-      for (let r = 50; r < 150; r += 30) {
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
-        ctx.stroke();
+      const sliceWidth = 300 / waveformData.length;
+      const startX = centerX - 150;
+      
+      for (let i = 0; i < waveformData.length; i++) {
+        const v = waveformData[i] / 255.0;
+        const y = lineY + (v - 0.5) * lineHeight * 2;
+        const x = startX + i * sliceWidth;
+        
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
       }
+      
+      ctx.stroke();
+      ctx.shadowBlur = 0;
     };
 
     draw();
