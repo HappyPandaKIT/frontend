@@ -34,6 +34,24 @@
   padding: 0.3em;
 }
 
+/* Hide keyboard key on actual touch devices (not just small screens) */
+.drum-pad > span:first-child {
+  display: block;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .drum-pad > span:first-child {
+    display: none; /* Hide keyboard key on touch devices only */
+  }
+  
+  .drum-pad-label {
+    font-size: 1em !important; /* Make name bigger on touch devices */
+    margin-top: 0 !important;
+    opacity: 1 !important;
+    text-align: center;
+  }
+}
+
 .drum-pad-label {
   font-size: 0.6em;
   margin-top: 5px;
