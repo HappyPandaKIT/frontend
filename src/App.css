@@ -17,9 +17,52 @@
   margin: 2rem 0;
 }
 
+/* Mode Switcher Styles */
+.mode-switcher-container {
+  margin-bottom: 2rem;
+}
+
+.mode-switcher-inner {
+  padding: 1.5rem;
+}
+
+.mode-switcher-title {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.mode-switcher-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.mode-switcher-btn {
+  min-width: 160px;
+  font-size: 0.9rem;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.mode-switcher-btn.is-active {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(146, 204, 65, 0.6);
+}
+
 @media (max-width: 768px) {
   #root {
     padding: 0.5rem;
+  }
+  
+  .mode-switcher-btn {
+    min-width: 120px;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
   }
 }
 

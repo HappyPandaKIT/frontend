@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './VisualizerContainer.css';
+
+// Regular imports for instant loading (no delay)
 import BarVisualizer from './BarVisualizer';
 import CircleVisualizer from './CircleVisualizer';
 import WaveformVisualizer from './WaveformVisualizer';
@@ -21,21 +23,58 @@ import NeuralNetVisualizer from './NeuralNetVisualizer';
 import ExpandingRingsVisualizer from './ExpandingRingsVisualizer';
 import CometShowerVisualizer from './CometShowerVisualizer';
 
+// Visualizer component map for efficient rendering (only active one renders)
+const VISUALIZER_COMPONENTS = {
+  bars: BarVisualizer,
+  circle: CircleVisualizer,
+  waveform: WaveformVisualizer,
+  matrix: MatrixRainVisualizer,
+  pulse: PulseRingsVisualizer,
+  wormhole: WormholeVisualizer,
+  blocks: BlocksVisualizer,
+  particles: OrbitingParticlesVisualizer,
+  neon: NeonGridVisualizer,
+  scope: OscilloscopeVisualizer,
+  circwave: CircularWaveVisualizer,
+  sun: SunVisualizer,
+  voronoi: VoronoiVisualizer,
+  fractal: FractalVisualizer,
+  attractor: AttractorVisualizer,
+  flow: FlowFieldVisualizer,
+  ink: InkWaterVisualizer,
+  neural: NeuralNetVisualizer,
+  rings: ExpandingRingsVisualizer,
+  comet: CometShowerVisualizer
+};
+
+// Main visualizers shown as buttons
+const MAIN_VISUALIZERS = ['bars', 'circle', 'waveform', 'matrix', 'blocks', 'attractor'];
+
+// Other visualizers in dropdown
+const DROPDOWN_VISUALIZERS = ['neon', 'pulse', 'wormhole', 'particles', 'scope', 'circwave', 'sun', 'voronoi', 'fractal', 'flow', 'ink', 'neural', 'rings', 'comet'];
+
+// Custom display names for visualizers
+const VISUALIZER_NAMES = {
+  'neon': 'GRID',
+  'circwave': 'CIRCWAVE',
+  'scope': 'SCOPE',
+  'voronoi': 'CONSTELLATION'
+};
+
+const getVisualizerName = (type) => VISUALIZER_NAMES[type] || type.toUpperCase();
+
 const VisualizerContainer = ({ analyser, drumAnalyser }) => {
   const [visualizerType, setVisualizerType] = useState('bars');
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  // Create a merged analyser that combines data from both sources
-  // Use state instead of ref to trigger re-renders when analyser is ready
-  const [activeAnalyser, setActiveAnalyser] = React.useState(null);
+  const [activeAnalyser, setActiveAnalyser] = useState(null);
   
-  React.useEffect(() => {
+  // Create a merged analyser that combines data from both sources
+  useEffect(() => {
     if (!analyser && !drumAnalyser) {
       setActiveAnalyser(null);
       return;
     }
 
-    // Create a virtual analyser object that merges data from both sources
     const mergedAnalyser = {
       frequencyBinCount: (analyser?.frequencyBinCount || drumAnalyser?.frequencyBinCount || 128),
       fftSize: (analyser?.fftSize || drumAnalyser?.fftSize || 256),
@@ -46,7 +85,6 @@ const VisualizerContainer = ({ analyser, drumAnalyser }) => {
         if (tempArray1) analyser.getByteFrequencyData(tempArray1);
         if (tempArray2) drumAnalyser.getByteFrequencyData(tempArray2);
         
-        // Merge the data by taking the maximum value at each frequency bin
         for (let i = 0; i < dataArray.length; i++) {
           const val1 = tempArray1 ? tempArray1[i] : 0;
           const val2 = tempArray2 ? tempArray2[i] : 0;
@@ -54,11 +92,21 @@ const VisualizerContainer = ({ analyser, drumAnalyser }) => {
         }
       },
       getByteTimeDomainData: (dataArray) => {
-        // For time domain, prefer the active analyser or fall back to drum analyser
-        if (analyser) {
-          analyser.getByteTimeDomainData(dataArray);
-        } else if (drumAnalyser) {
-          drumAnalyser.getByteTimeDomainData(dataArray);
+        // Merge time domain data from both sources
+        const tempArray1 = analyser ? new Uint8Array(analyser.fftSize || 256) : null;
+        const tempArray2 = drumAnalyser ? new Uint8Array(drumAnalyser.fftSize || 256) : null;
+        
+        if (tempArray1) analyser.getByteTimeDomainData(tempArray1);
+        if (tempArray2) drumAnalyser.getByteTimeDomainData(tempArray2);
+        
+        // Merge by taking the value furthest from center (128)
+        for (let i = 0; i < dataArray.length; i++) {
+          const val1 = tempArray1 ? tempArray1[i] : 128;
+          const val2 = tempArray2 ? tempArray2[i] : 128;
+          // Take whichever deviates more from center (128)
+          const dev1 = Math.abs(val1 - 128);
+          const dev2 = Math.abs(val2 - 128);
+          dataArray[i] = dev1 > dev2 ? val1 : val2;
         }
       }
     };
@@ -66,51 +114,13 @@ const VisualizerContainer = ({ analyser, drumAnalyser }) => {
     setActiveAnalyser(mergedAnalyser);
   }, [analyser, drumAnalyser]);
 
-  const visualizers = {
-    bars: <BarVisualizer analyser={activeAnalyser} />,
-    circle: <CircleVisualizer analyser={activeAnalyser} />,
-    waveform: <WaveformVisualizer analyser={activeAnalyser} />,
-    matrix: <MatrixRainVisualizer analyser={activeAnalyser} />,
-    pulse: <PulseRingsVisualizer analyser={activeAnalyser} />,
-    wormhole: <WormholeVisualizer analyser={activeAnalyser} />,
-    blocks: <BlocksVisualizer analyser={activeAnalyser} />,
-    particles: <OrbitingParticlesVisualizer analyser={activeAnalyser} />,
-    neon: <NeonGridVisualizer analyser={activeAnalyser} />,
-    scope: <OscilloscopeVisualizer analyser={activeAnalyser} />,
-    circwave: <CircularWaveVisualizer analyser={activeAnalyser} />,
-    sun: <SunVisualizer analyser={activeAnalyser} />,
-    voronoi: <VoronoiVisualizer analyser={activeAnalyser} />,
-    fractal: <FractalVisualizer analyser={activeAnalyser} />,
-    attractor: <AttractorVisualizer analyser={activeAnalyser} />,
-    flow: <FlowFieldVisualizer analyser={activeAnalyser} />,
-    ink: <InkWaterVisualizer analyser={activeAnalyser} />,
-    neural: <NeuralNetVisualizer analyser={activeAnalyser} />,
-    rings: <ExpandingRingsVisualizer analyser={activeAnalyser} />,
-    comet: <CometShowerVisualizer analyser={activeAnalyser} />
-  };
-
-  // Main visualizers shown as buttons
-  const mainVisualizers = ['bars', 'circle', 'waveform', 'matrix', 'blocks', 'attractor'];
-  
-  // Other visualizers in dropdown
-  const otherVisualizers = ['neon', 'pulse', 'wormhole', 'particles', 'scope', 'circwave', 'sun', 'voronoi', 'fractal', 'flow', 'ink', 'neural', 'rings', 'comet'];
-
-  // Custom display names for visualizers
-  const visualizerNames = {
-    'neon': 'GRID',
-    'circwave': 'CIRCWAVE',
-    'scope': 'SCOPE',
-    'voronoi': 'CONSTELLATION'
-  };
-
-  const getVisualizerName = (type) => {
-    return visualizerNames[type] || type.toUpperCase();
-  };
+  // Only render the active visualizer component
+  const VisualizerComponent = VISUALIZER_COMPONENTS[visualizerType];
 
   return (
     <div className="nes-container is-dark visualizer-container">
       <div className="visualizer-controls">
-        {mainVisualizers.map((type) => (
+        {MAIN_VISUALIZERS.map((type) => (
           <button
             key={type}
             type="button"
@@ -124,14 +134,14 @@ const VisualizerContainer = ({ analyser, drumAnalyser }) => {
         <div className="visualizer-dropdown-container">
           <button
             type="button"
-            className={`nes-btn visualizer-button ${otherVisualizers.includes(visualizerType) ? 'is-primary' : ''}`}
+            className={`nes-btn visualizer-button ${DROPDOWN_VISUALIZERS.includes(visualizerType) ? 'is-primary' : ''}`}
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             ▼
           </button>
           {dropdownOpen && (
             <div className="visualizer-dropdown-menu">
-              {otherVisualizers.map((type) => (
+              {DROPDOWN_VISUALIZERS.map((type) => (
                 <button
                   key={type}
                   type="button"
@@ -149,7 +159,7 @@ const VisualizerContainer = ({ analyser, drumAnalyser }) => {
         </div>
       </div>
 
-      {visualizers[visualizerType]}
+      <VisualizerComponent analyser={activeAnalyser} />
     </div>
   );
 };

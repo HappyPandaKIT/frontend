@@ -1,4 +1,6 @@
 import React from 'react';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
 import './PlayerControls.css';
 
 const formatTime = (time) => {
@@ -26,7 +28,7 @@ const PlayerControls = ({
           className={`nes-btn player-controls-button ${isPlaying ? 'is-error' : 'is-success'}`}
           onClick={onTogglePlayPause}
         >
-          {isPlaying ? '⏸' : '▶'}
+          <span className="btn-icon">{isPlaying ? <PauseIcon /> : <PlayArrowIcon />}</span>
         </button>
         <div className="player-controls-progress" onClick={onProgressClick}>
           <div 

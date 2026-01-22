@@ -1,4 +1,7 @@
 import React from 'react';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import './Playlist.css';
 
 const Playlist = ({ beats, uploadedTracks, currentBeatId, isPlaying, onPlayTrack, onTogglePlayPause, onDeleteTrack, onFileUpload }) => {
@@ -47,7 +50,7 @@ const Playlist = ({ beats, uploadedTracks, currentBeatId, isPlaying, onPlayTrack
               }}
               style={{ cursor: 'pointer' }}
             >
-              {currentBeatId === track.id ? (isPlaying ? <span className="pause-icon">▮▮</span> : '▶') : '♪'}
+              {currentBeatId === track.id ? (isPlaying ? <span className="pause-icon"><PauseIcon fontSize="small" /></span> : <PlayArrowIcon fontSize="small" />) : <MusicNoteIcon fontSize="small" />}
             </div>
             <div className="playlist-info">
               <div className="playlist-title">{track.title}</div>

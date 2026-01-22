@@ -148,3 +148,46 @@ button:focus-visible {
     color: #fff;
   }
 }
+
+/* Fix icon alignment inside buttons and text */
+.nes-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5em;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  line-height: 1;
+}
+
+.btn-icon svg {
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.nes-icon {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  margin-bottom: 0 !important;
+}
+
+/* For icons inside headings */
+h1 .nes-icon,
+h2 .nes-icon,
+h3 .nes-icon {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  margin-right: 0.5em;
+  margin-bottom: 0.2em;
+}
+
+/* For buttons with icons */
+.nes-btn .nes-icon {
+  margin: 0 !important;
+  line-height: 1 !important;
+}

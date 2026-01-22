@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+import StopIcon from '@mui/icons-material/Stop';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CasinoIcon from '@mui/icons-material/Casino';
 import './Beatmaker.css';
 
 const BeatmakerContainer = styled.div`
@@ -360,28 +365,28 @@ const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume, sharedVolu
           className={`nes-btn ${isPlaying ? 'is-error' : 'is-success'}`}
           onClick={togglePlay}
         >
-          {isPlaying ? '⏸ PAUSE' : '▶ PLAY'}
+          <span className="btn-icon">{isPlaying ? <PauseIcon /> : <PlayArrowIcon />}</span>
         </button>
         
         <button 
           className="nes-btn is-warning"
           onClick={stop}
         >
-          ⏹ STOP
+          <span className="btn-icon"><StopIcon /></span>
         </button>
 
         <button 
           className="nes-btn"
           onClick={clearPattern}
         >
-          🗑 CLEAR
+          <span className="btn-icon"><DeleteIcon /></span>
         </button>
 
         <button 
           className="nes-btn is-primary"
           onClick={generateRandomPattern}
         >
-          🎲 RANDOM
+          <span className="btn-icon"><CasinoIcon /></span>
         </button>
 
         <BPMControl>
