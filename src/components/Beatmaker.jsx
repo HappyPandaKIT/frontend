@@ -364,6 +364,7 @@ const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume, sharedVolu
         <button 
           className={`nes-btn ${isPlaying ? 'is-error' : 'is-success'}`}
           onClick={togglePlay}
+          data-tooltip={isPlaying ? 'Pause' : 'Play'}
         >
           <span className="btn-icon">{isPlaying ? <PauseIcon /> : <PlayArrowIcon />}</span>
         </button>
@@ -371,6 +372,7 @@ const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume, sharedVolu
         <button 
           className="nes-btn is-warning"
           onClick={stop}
+          data-tooltip="Stop"
         >
           <span className="btn-icon"><StopIcon /></span>
         </button>
@@ -378,6 +380,7 @@ const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume, sharedVolu
         <button 
           className="nes-btn"
           onClick={clearPattern}
+          data-tooltip="Clear Pattern"
         >
           <span className="btn-icon"><DeleteIcon /></span>
         </button>
@@ -385,6 +388,7 @@ const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume, sharedVolu
         <button 
           className="nes-btn is-primary"
           onClick={generateRandomPattern}
+          data-tooltip="Generate Random Pattern"
         >
           <span className="btn-icon"><CasinoIcon /></span>
         </button>

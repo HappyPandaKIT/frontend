@@ -173,9 +173,44 @@ button:focus-visible {
 /* Make music note icons smaller on mobile */
 @media (hover: none) and (pointer: coarse) {
   .mode-switcher-btn .btn-icon svg {
-    width: 0.9em;
-    height: 0.9em;
+    width: 0.8em;
+    height: 0.8em;
   }
+}
+
+/* Custom tooltips with white text on black background */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:hover::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: #000;
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+[data-tooltip]:hover::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #000;
+  margin-bottom: 0px;
+  z-index: 1000;
+  pointer-events: none;
 }
 
 .nes-icon {
