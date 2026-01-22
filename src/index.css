@@ -170,6 +170,14 @@ button:focus-visible {
   height: 1.2em;
 }
 
+/* Make music note icons smaller on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .mode-switcher-btn .btn-icon svg {
+    width: 0.9em;
+    height: 0.9em;
+  }
+}
+
 .nes-icon {
   display: inline-block !important;
   vertical-align: middle !important;

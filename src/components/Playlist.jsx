@@ -2,6 +2,7 @@ import React from 'react';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import AddIcon from '@mui/icons-material/Add';
 import './Playlist.css';
 
 const Playlist = ({ beats, uploadedTracks, currentBeatId, isPlaying, onPlayTrack, onTogglePlayPause, onDeleteTrack, onFileUpload }) => {
@@ -18,7 +19,7 @@ const Playlist = ({ beats, uploadedTracks, currentBeatId, isPlaying, onPlayTrack
       </div>
       <div className="playlist-upload-section">
         <label htmlFor="file-upload" className="playlist-upload-label">
-          <span className="playlist-upload-icon">+</span>
+          <span className="playlist-upload-icon"><AddIcon /></span>
           Add your favorite tracks
         </label>
         <input 
