@@ -358,6 +358,7 @@ const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume, sharedVolu
             if (setVolume) setVolume(newVolume); // Update gain node
           }}
           className="drum-machine-volume-slider"
+          style={{ '--range-progress': `${volume * 100}%` }}
         />
       </div>
 
@@ -402,7 +403,7 @@ const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume, sharedVolu
             max="200"
             value={bpm}
             onChange={(e) => setBpm(parseInt(e.target.value))}
-            style={{ width: '120px' }}
+            style={{ width: '120px', '--range-progress': `${((bpm - 60) / (200 - 60)) * 100}%` }}
           />
           <span style={{ fontSize: '14px', fontWeight: 'bold', minWidth: '45px' }}>{bpm}</span>
         </BPMControl>

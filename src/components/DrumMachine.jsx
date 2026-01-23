@@ -199,6 +199,7 @@ const DrumMachine = ({ onAudioContextReady, isActive = true, sharedVolume = 0.8,
           value={volume}
           onChange={(e) => setVolume(parseFloat(e.target.value))}
           className="drum-machine-volume-slider"
+          style={{ '--range-progress': `${volume * 100}%` }}
         />
       </div>
 

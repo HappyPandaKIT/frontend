@@ -51,6 +51,7 @@ const PlayerControls = ({
           value={volume}
           onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
           className="player-controls-volume-slider"
+          style={{ '--range-progress': `${volume * 100}%` }}
         />
       </div>
       {songTitle && (
