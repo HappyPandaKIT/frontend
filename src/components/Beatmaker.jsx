@@ -5,6 +5,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import StopIcon from '@mui/icons-material/Stop';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CasinoIcon from '@mui/icons-material/Casino';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import './Beatmaker.css';
 
 const BeatmakerContainer = styled.div`
@@ -455,8 +456,14 @@ const Beatmaker = React.forwardRef(({ audioCtx, playSound, setVolume, sharedVolu
           <button 
             className="nes-btn is-success"
             onClick={savePattern}
+            disabled={!patternName.trim()}
+            data-tooltip="Save Beat"
+            style={{ 
+              opacity: patternName.trim() ? 1 : 0.5,
+              cursor: patternName.trim() ? 'pointer' : 'not-allowed'
+            }}
           >
-            💾 SAVE
+            <span className="btn-icon"><SaveAltIcon /></span>
           </button>
         </div>
       </PatternControls>
