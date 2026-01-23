@@ -53,57 +53,57 @@ input[type="range"] {
   appearance: none;
   background: transparent;
   border: none;
-  width: 100%;
   height: 20px;
   cursor: pointer;
 }
 
-/* Firefox-style track for all browsers */
+/* Track styling for all browsers */
 input[type="range"]::-webkit-slider-runnable-track {
   width: 100%;
-  height: 6px;
-  background: #8f8f9d;
-  border-radius: 3px;
+  height: 8px;
+  background: linear-gradient(to right, #4a90d9 0%, #4a90d9 var(--range-progress, 50%), #666 var(--range-progress, 50%), #666 100%);
+  background: #666;
+  border-radius: 4px;
   border: none;
 }
 
 input[type="range"]::-moz-range-track {
   width: 100%;
-  height: 6px;
-  background: #8f8f9d;
-  border-radius: 3px;
+  height: 8px;
+  background: #666;
+  border-radius: 4px;
   border: none;
 }
 
-/* Firefox-style thumb for all browsers */
+/* Thumb styling for all browsers */
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
-  background: #2b6bcc;
+  width: 20px;
+  height: 20px;
+  background: #fff;
   border-radius: 50%;
-  border: none;
-  margin-top: -5px;
+  border: 2px solid #333;
+  margin-top: -6px;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 input[type="range"]::-moz-range-thumb {
   width: 16px;
   height: 16px;
-  background: #2b6bcc;
+  background: #fff;
   border-radius: 50%;
-  border: none;
+  border: 2px solid #333;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Hover state */
-input[type="range"]::-webkit-slider-thumb:hover {
-  background: #3d7ee0;
-}
-
-input[type="range"]::-moz-range-thumb:hover {
-  background: #3d7ee0;
+/* Firefox progress fill */
+input[type="range"]::-moz-range-progress {
+  background: #4a90d9;
+  height: 8px;
+  border-radius: 4px 0 0 4px;
 }
 
 /* Prevent iOS from changing colors on tap */
